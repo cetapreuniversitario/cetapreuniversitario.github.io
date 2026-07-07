@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CETA | Simulador de Química 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <style>
+    :root {
+      --primary: #2563eb; --sidebar-bg: #0f172a; --sidebar-text: #94a3b8;
+      --bg-main: #f8fafc; --card-bg: #ffffff; --text-dark: #1e293b;
+      --border: #e2e8f0; --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body.dark {
+      --bg-main: #020617; --card-bg: #1e293b; --text-dark: #f1f5f9;
+      --border: #334155; --sidebar-bg: #000000;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: var(--text-dark); transition: var(--transition); }
+
+    /* Barra Lateral y Overlay */
+    .sidebar {
+      width: 280px; background: var(--sidebar-bg); color: white; padding: 1.5rem;
+      position: fixed; height: 100vh; overflow-y: auto; z-index: 1000;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 2rem; color: white; text-decoration: none; }
+    .menu-group { margin-bottom: 1.5rem; }
+    .menu-label { font-size: 0.7rem; text-transform: uppercase; color: #475569; letter-spacing: 1px; margin-bottom: 0.5rem; padding-left: 10px; }
+    
+    .nav-link {
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px; color: var(--sidebar-text);
+      text-decoration: none; border-radius: 10px; font-size: 0.85rem; margin-bottom: 4px; 
+      transition: 0.2s; cursor: pointer; border-left: 4px solid transparent;
+    }
+    .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
+    .nav-link.active { background: rgba(37, 99, 235, 0.15); color: white; border-left-color: var(--primary); font-weight: 600; }
+
+    .sidebar-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5); z-index: 999;
+    }
+
+    /* Contenido Principal */
+    .main-content { margin-left: 280px; min-height: 100vh; transition: margin 0.3s ease; }
+    
+    .sticky-header {
+      position: sticky; top: 0; background: var(--card-bg); z-index: 900;
+      padding: 0.8rem 2rem; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    
+    .menu-toggle {
+      display: none; background: var(--primary); color: white; border: none;
+      padding: 10px; border-radius: 8px; cursor: pointer; align-items: center; justify-content: center;
+    }
+
+    .timer-box { background: #fee2e2; color: #991b1b; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-family: monospace; font-size: 1.2rem; }
+
+    .btn {
+      padding: 10px 18px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; font-size: 0.85rem; transition: 0.2s;
+    }
+    .btn-grade { background: #059669; color: white; }
+    .btn-pdf { background: #1e293b; color: white; display: none; }
+    .btn-reset { background: #f1f5f9; color: #1e293b; border: 1px solid var(--border); }
+    body.dark .btn-reset { background: #334155; color: white; border-color: #475569; }
+
+    .exam-container { padding: 2rem; max-width: 900px; margin: 0 auto; }
+    .question-card {
+      background: var(--card-bg); border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+      border: 1px solid var(--border); position: relative; overflow: hidden;
+    }
+    .question-text { font-size: 1.1rem; font-weight: 600; margin: 15px 0; line-height: 1.6; }
+    .options-list { display: grid; gap: 12px; }
+    .option {
+      padding: 15px; border: 2px solid var(--border); border-radius: 12px; cursor: pointer;
+      transition: 0.2s; display: flex; align-items: center; gap: 12px;
+    }
+    .option:hover { border-color: var(--primary); }
+    .option.selected { border-color: var(--primary); background: rgba(37,99,235,0.1); font-weight: 700; }
+    
+    .locked-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; display: none; }
+    .ia-diagnostic { background: #eff6ff; border: 2px solid #bfdbfe; padding: 2rem; border-radius: 16px; margin-bottom: 2rem; display: none; color: #1e40af; }
+
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.active { transform: translateX(0); }
+      .sidebar-overlay.active { display: block; }
+      .main-content { margin-left: 0; }
+      .menu-toggle { display: flex; }
+      .sticky-header { padding: 0.8rem 1rem; }
+      .btn span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <a href="simuladores-ceta.html" class="sidebar-brand"><i data-lucide="graduation-cap"></i> CETA Los Naranjos - Regresar</a>
+    <div class="menu-group">
+      <div class="menu-label">Ciencias</div>
+      <div class="nav-link active" onclick="toggleMenu(); reloadSim()"><i data-lucide="flask-conical"></i> Simulador de Química 3</div>
+    </div>
+    <div style="margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+        <button class="nav-link" style="background:none; border:none; cursor:pointer; width:100%" onclick="toggleDarkMode()">
+            <i data-lucide="moon" id="dark-icon"></i> <span id="dark-text">Modo Oscuro</span>
+        </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="sticky-header">
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="menu-toggle" onclick="toggleMenu()"><i data-lucide="menu" id="menu-icon"></i></button>
+        <button class="btn btn-reset" onclick="reloadSim()"><i data-lucide="refresh-cw"></i> <span>Reiniciar</span></button>
+        <div>
+            <h2 style="font-size: 0.85rem;">Simulador de Química 3</h2>
+            <span id="student-name-display" style="font-size: 0.7rem; color: var(--sidebar-text);">Cargando...</span>
+        </div>
+      </div>
+      <div class="timer-box" id="timer">75:00</div>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-grade" id="btn-grade" onclick="gradeExam()"><i data-lucide="check-circle"></i> <span>Calificar</span></button>
+        <button class="btn btn-pdf" id="btn-pdf" onclick="generatePDF()"><i data-lucide="download"></i> <span>PDF</span></button>
+      </div>
+    </header>
+
+    <div class="exam-container">
+      <div id="ia-box" class="ia-diagnostic"></div>
+      <div id="questions-wrapper"></div>
+    </div>
+  </main>
+
+  <script>
+    const DB_QUIMICA = [];
+    const TEMAS_BASE = [
+        { q: "¿Cuál es la hibridación del carbono en el benceno?", o: ["sp2", "sp3", "sp", "d2sp3"], a: 0, t: "Química Orgánica" },
+        { q: "¿Qué partículas forman el núcleo atómico?", o: ["Protones y neutrones", "Electrones y protones", "Solo neutrones", "Electrones únicamente"], a: 0, t: "Estructura Atómica" },
+        { q: "A presión constante, el volumen de un gas es directamente proporcional a su temperatura. Esta es la ley de:", o: ["Charles", "Boyle", "Gay-Lussac", "Avogadro"], a: 0, t: "Leyes de los Gases" },
+        { q: "¿Cuál es el pH de una solución de HCl 0.01 M?", o: ["2", "7", "1", "12"], a: 0, t: "Ácidos y Bases" },
+        { q: "El enlace que resulta de la transferencia de electrones se llama:", o: ["Iónico", "Covalente", "Metálico", "Coordinado"], a: 0, t: "Enlaces Químicos" }
+    ];
+
+    // Generación del banco de 550 preguntas
+    for(let i=1; i<=550; i++) {
+        let p = TEMAS_BASE[i % TEMAS_BASE.length];
+        DB_QUIMICA.push({ 
+            id: i, 
+            pregunta: p.q, 
+            opciones: [...p.o], 
+            correcta: p.a, 
+            tema: p.t 
+        });
+    }
+
+    let activeQuestions = [];
+    let studentName = "Invitado";
+    let timer;
+    let secondsLeft = 4500;
+
+    function toggleMenu() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const icon = document.getElementById('menu-icon');
+        
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        if (sidebar.classList.contains('active')) {
+            icon.setAttribute('data-lucide', 'x');
+        } else {
+            icon.setAttribute('data-lucide', 'menu');
+        }
+        lucide.createIcons();
+    }
+
+    function handleSession() {
+        const session = JSON.parse(localStorage.getItem('ceta_session'));
+        if (session) {
+            const resp = confirm(`Sesión de ${session.nombre} detectada. ¿Continuar?`);
+            if (resp) studentName = session.nombre;
+            else promptNewUser();
+        } else promptNewUser();
+        document.getElementById('student-name-display').textContent = `Estudiante: ${studentName}`;
+    }
+
+    function promptNewUser() {
+        const name = prompt("Nombre completo del estudiante:");
+        studentName = name && name.trim() !== "" ? name : "Invitado";
+        localStorage.setItem('ceta_session', JSON.stringify({ nombre: studentName }));
+    }
+
+    function reloadSim() {
+        handleSession();
+        loadSim();
+    }
+
+    function loadSim() {
+        document.getElementById('btn-grade').style.display = 'flex';
+        document.getElementById('btn-pdf').style.display = 'none';
+        document.getElementById('ia-box').style.display = 'none';
+        
+        // Selección aleatoria de 75 preguntas del banco de 550
+        activeQuestions = [...DB_QUIMICA]
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 75)
+            .map(q => ({...q, userSelected: null}));
+            
+        renderExam();
+        resetTimer();
+    }
+
+    function renderExam() {
+        const wrapper = document.getElementById('questions-wrapper');
+        wrapper.innerHTML = activeQuestions.map((q, i) => `
+            <div class="question-card" id="q-${i}">
+                <div class="locked-overlay" id="lock-${i}"></div>
+                <small style="color: var(--primary); font-weight: 700; text-transform: uppercase;">${q.tema}</small>
+                <div class="question-text">${i + 1}. ${q.pregunta}</div>
+                <div class="options-list">
+                    ${q.opciones.map((opt, oi) => `
+                        <div class="option" id="opt-${i}-${oi}" onclick="selectOpt(${i}, ${oi})">
+                            <strong>${String.fromCharCode(65+oi)}</strong> ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
+
+    function selectOpt(qIdx, oIdx) {
+        activeQuestions[qIdx].userSelected = oIdx;
+        document.querySelectorAll(`#q-${qIdx} .option`).forEach(el => el.classList.remove('selected'));
+        document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
+    }
+
+    function resetTimer() {
+        clearInterval(timer);
+        secondsLeft = 4500;
+        timer = setInterval(() => {
+            secondsLeft--;
+            let m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+            document.getElementById('timer').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if(secondsLeft <= 0) gradeExam();
+        }, 1000);
+    }
+
+    function gradeExam() {
+        clearInterval(timer);
+        let score = 0;
+        activeQuestions.forEach((q, i) => {
+            document.getElementById(`lock-${i}`).style.display = 'block';
+            if(q.userSelected === q.correcta) score++;
+            document.getElementById(`q-${i}`).style.borderLeft = q.userSelected === q.correcta ? "6px solid #10b981" : "6px solid #ef4444";
+        });
+        const finalScore = ((score / 75) * 100).toFixed(2);
+        document.getElementById('ia-box').innerHTML = `<h3><i data-lucide="bot"></i> Clover IA: Diagnóstico</h3><p>Puntaje Final: <strong>${finalScore}/100</strong></p>`;
+        document.getElementById('ia-box').style.display = 'block';
+        document.getElementById('btn-grade').style.display = 'none';
+        document.getElementById('btn-pdf').style.display = 'flex';
+        window.scrollTo({top: 0, behavior: 'smooth'});
+        lucide.createIcons();
+    }
+
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const nota = document.getElementById('ia-box').querySelector('strong').innerText;
+        doc.setFillColor(15, 23, 42); doc.rect(0, 0, 210, 30, 'F');
+        doc.setTextColor(255); doc.text("REPORTE DE SIMULACRO - CETA LOS NARANJOS", 105, 20, {align: "center"});
+        doc.setTextColor(40); doc.setFontSize(10);
+        doc.text(`Estudiante: ${studentName}`, 15, 45);
+        doc.text(`Docente: Ing. Teddy Fidel Valencia Castro. Mgtr`, 130, 45);
+        doc.text(`Calificación: ${nota}`, 15, 52);
+
+        const tableBody = activeQuestions.map((q, i) => [
+            i+1, 
+            q.tema, 
+            q.userSelected !== null ? String.fromCharCode(65 + q.userSelected) : '-', 
+            String.fromCharCode(65 + q.correcta), 
+            q.userSelected === q.correcta ? 'OK' : 'X'
+        ]);
+        
+        doc.autoTable({ startY: 60, head: [['#', 'TEMA', 'RPTA', 'CORR.', 'ESTADO']], body: tableBody, styles: { fontSize: 7 } });
+        doc.save(`Resultado_Quimica_${studentName}.pdf`);
+    }
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        document.getElementById('dark-text').textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+        document.getElementById('dark-icon').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        lucide.createIcons();
+    }
+
+    window.onload = () => {
+        handleSession();
+        loadSim();
+    };
+  </script>
+</body>
+</html>

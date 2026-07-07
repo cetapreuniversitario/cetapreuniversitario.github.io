@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CETA Video Safe | Clover Technology</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --sidebar-bg: #0f172a;
+      --sidebar-text: #94a3b8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.dark {
+      --bg-main: #020617;
+      --card-bg: #1e293b;
+      --text-dark: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+    
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      background-color: var(--bg-main); 
+      color: var(--text-dark); 
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* --- LOGIN SCREEN --- */
+    #login-screen {
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; background: radial-gradient(circle at top left, #1e293b, #0f172a);
+      padding: 20px;
+    }
+    .login-card {
+      background: white; padding: 2.5rem; border-radius: 24px;
+      width: 100%; max-width: 400px; text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+
+    /* --- LAYOUT ESTRUCTURA --- */
+    #main-dashboard { display: none; }
+    
+    .mobile-header {
+      display: none; position: fixed; top: 0; left: 0; right: 0;
+      height: 64px; background: var(--sidebar-bg); color: white;
+      align-items: center; padding: 0 1.25rem; z-index: 1000; 
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    }
+
+    .sidebar {
+      width: 280px; background: var(--sidebar-bg); color: white;
+      padding: 1.5rem; position: fixed; height: 100vh;
+      display: flex; flex-direction: column; gap: 0.5rem; z-index: 1001; 
+      transition: var(--transition);
+    }
+
+    .main-content { 
+      margin-left: 280px; 
+      padding: 2rem; 
+      max-width: 1400px; 
+      margin-right: auto;
+      transition: var(--transition); 
+    }
+
+    .overlay { 
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+      background: rgba(0,0,0,0.6); z-index: 1000; backdrop-filter: blur(4px); 
+    }
+
+    /* --- NAVEGACIÓN --- */
+    .nav-label { 
+      font-size: 0.7rem; font-weight: 800; color: #475569; 
+      text-transform: uppercase; letter-spacing: 1.2px; 
+      margin: 1.5rem 0 0.5rem 10px; 
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+      color: var(--sidebar-text); text-decoration: none; border-radius: 12px;
+      transition: 0.2s; cursor: pointer; border: none; background: none; width: 100%;
+      font-size: 0.95rem; font-family: inherit; font-weight: 500;
+    }
+
+    .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); color: white; }
+    
+    .filter-select {
+      background: #1e293b; color: white; border: 1px solid #334155;
+      padding: 12px; border-radius: 10px; font-size: 0.9rem; width: 100%;
+      outline: none; cursor: pointer;
+    }
+
+    /* --- VIDEO PLAYER --- */
+    .player-section { margin-bottom: 2.5rem; }
+    .player-container {
+      background: #000; border-radius: 20px; overflow: hidden;
+      aspect-ratio: 16 / 9; width: 100%; 
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+      border: 1px solid var(--border);
+    }
+    video { width: 100%; height: 100%; object-fit: contain; }
+
+    /* --- GRID DE VIDEOS --- */
+    .video-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+      gap: 1.5rem; 
+    }
+    .video-card {
+      background: var(--card-bg); border-radius: 18px; padding: 12px;
+      border: 1px solid var(--border); cursor: pointer; transition: var(--transition);
+    }
+    .video-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    
+    .thumb {
+      width: 100%; aspect-ratio: 16/9; background: #0f172a; border-radius: 12px;
+      margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .date-tag { 
+      position: absolute; bottom: 8px; right: 8px; 
+      background: rgba(0,0,0,0.8); color: white; 
+      font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; 
+    }
+
+    /* --- RESPONSIVE DESIGN --- */
+    @media (max-width: 992px) {
+      .sidebar { left: -280px; }
+      .sidebar.active { left: 0; }
+      .main-content { margin-left: 0; padding: 5rem 1rem 2rem 1rem; }
+      .mobile-header { display: flex; }
+      .overlay.active { display: block; }
+    }
+
+    @media (max-width: 480px) {
+      .video-grid { grid-template-columns: 1fr; }
+      .login-card { padding: 1.5rem; }
+    }
+
+    /* --- BOTONES E INPUTS --- */
+    .btn-primary { 
+      width: 100%; padding: 14px; background: var(--primary); color: white; 
+      border: none; border-radius: 12px; font-weight: 700; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .input-field { 
+      width: 100%; padding: 14px; margin-bottom: 1rem; 
+      border: 2px solid var(--border); border-radius: 12px; outline: none; 
+      font-family: inherit; transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: var(--primary); }
+  </style>
+</head>
+<body oncontextmenu="return false;">
+
+  <div id="login-screen">
+    <div class="login-card">
+      <div style="background: var(--primary); color:white; width:64px; height:64px; margin: 0 auto 1.5rem; border-radius:18px; display:flex; align-items:center; justify-content:center;">
+        <i data-lucide="lock" size="32"></i>
+      </div>
+      <h2 style="margin-bottom: 0.5rem;">CETA Cloud</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">Ingresa tu código de estudiante</p>
+      <input type="text" id="accessCode" class="input-field" placeholder="Ej: Estudiante1-CETA">
+      <button class="btn-primary" onclick="handleLogin()">Acceder Ahora</button>
+      <p id="login-error" style="color:#ef4444; display:none; margin-top:15px; font-size:0.9rem; font-weight:600;"></p>
+    </div>
+  </div>
+
+  <div class="mobile-header">
+    <button id="menu-open" style="background:none; border:none; color:white; cursor:pointer;">
+      <i data-lucide="menu" size="28"></i>
+    </button>
+    <a href="simuladores-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+    <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;"><i data-lucide="shield" color="#60a5fa" size="28"></i> CETA Cloud - Regresar</span></a>
+
+
+    <div style="width: 28px;"></div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div id="main-dashboard">
+    <aside class="sidebar" id="sidebar">
+      <div style="margin-bottom: 2rem; padding-left: 10px;">
+       <div style="display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.2rem;">
+  <a href="simuladores-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+    <i data-lucide="shield" color="#60a5fa" size="28"></i> 
+    <span>CETA Cloud - Regresar</span>
+  </a>
+</div>
+      </div>
+
+      <div class="nav-label">Módulos de Aprendizaje</div>
+      <div id="dynamic-menu"></div>
+
+      <div class="nav-label">Ordenar Contenido</div>
+      <div style="padding: 0 10px;">
+        <select class="filter-select" id="sortDate" onchange="applyFilters()">
+          <option value="newest">Más recientes primero</option>
+          <option value="oldest">Más antiguos primero</option>
+        </select>
+      </div>
+
+      <div style="margin-top: auto; padding-top: 2rem;">
+        <div class="nav-label">Preferencias</div>
+        <button class="nav-item" id="dark-toggle"><i data-lucide="moon"></i><span>Modo Oscuro</span></button>
+        <button onclick="handleLogout()" class="nav-item" style="color:#f87171;"><i data-lucide="log-out"></i>Cerrar Sesión</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 id="user-display" style="font-size: 2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.25rem;">Hola</h1>
+          <p id="video-count" style="color: var(--text-muted); font-weight: 500;"></p>
+        </div>
+        <div style="background: var(--primary); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+          Estudiante Activo
+        </div>
+        
+      </header>
+
+      <section class="player-section">
+        <div class="player-container">
+          <video id="mainPlayer" controls controlsList="nodownload" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"></video>
+        </div>
+      </section>
+
+      <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;">Explorar Clases</h3>
+      <div class="video-grid" id="videoGrid"></div>
+    </main>
+  </div>
+
+  <script>
+    // --- DATOS ---
+    const ESTUDIANTES_DB = [
+      { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
+      { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 }
+    ];
+
+    const VIDEOS_DB = [
+      { id: 1, modulo: "Matemáticas", fecha: "2026-04-15", titulo: "Ecuaciones Logarítmicas Complejas", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
+      { id: 2, modulo: "Física", fecha: "2026-04-12", titulo: "Dinámica: Leyes de Newton Aplicadas", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" },
+      { id: 3, modulo: "Química", fecha: "2026-04-10", titulo: "Estequiometría y Balanceo", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
+      { id: 4, modulo: "R. Verbal", fecha: "2026-04-05", titulo: "Analogías y Comprensión Lectora", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" },
+      { id: 5, modulo: "Matemáticas", fecha: "2026-04-18", titulo: "Funciones Trigonométricas", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" }
+    ];
+
+    const ICON_MAP = {
+      "Matemáticas": "calculator",
+      "Física": "zap",
+      "Química": "flask-conical",
+      "R. Verbal": "brain",
+      "Razonamiento": "brain-circuit",
+      "default": "play-circle"
+    };
+
+    let currentModule = 'all';
+    const player = document.getElementById('mainPlayer');
+    const hls = new Hls();
+
+    // --- FUNCIONES ---
+    function generateMenu() {
+      const menuContainer = document.getElementById('dynamic-menu');
+      const modulosUnicos = [...new Set(VIDEOS_DB.map(v => v.modulo))];
+      
+      menuContainer.innerHTML = `
+        <button class="nav-item active" onclick="setModule('all', this)">
+          <i data-lucide="layout-grid"></i> Todas las clases
+        </button>
+      `;
+
+      modulosUnicos.forEach(mod => {
+        const iconName = ICON_MAP[mod] || ICON_MAP.default;
+        const btn = document.createElement('button');
+        btn.className = 'nav-item';
+        btn.onclick = () => setModule(mod, btn);
+        btn.innerHTML = `<i data-lucide="${iconName}"></i> ${mod}`;
+        menuContainer.appendChild(btn);
+      });
+      lucide.createIcons();
+    }
+
+    function setModule(mod, btn) {
+      currentModule = mod;
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      if(window.innerWidth <= 992) closeMenu();
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const sort = document.getElementById('sortDate').value;
+      const grid = document.getElementById('videoGrid');
+      let filtered = VIDEOS_DB.filter(v => currentModule === 'all' || v.modulo === currentModule);
+      
+      filtered.sort((a, b) => sort === 'newest' ? new Date(b.fecha) - new Date(a.fecha) : new Date(a.fecha) - new Date(b.fecha));
+
+      grid.innerHTML = '';
+      filtered.forEach(vid => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
+          <div class="thumb">
+            <div style="background: rgba(37, 99, 235, 0.2); padding: 15px; border-radius: 50%;">
+                <i data-lucide="play" color="#3b82f6" fill="#3b82f6" size="32"></i>
+            </div>
+            <span class="date-tag">${vid.fecha}</span>
+          </div>
+          <div style="font-size:0.75rem; color:var(--primary); font-weight:800; text-transform:uppercase; margin-bottom:4px;">${vid.modulo}</div>
+          <div style="font-weight:700; font-size:0.95rem; line-height:1.4; color: var(--text-dark);">${vid.titulo}</div>
+        `;
+        card.onclick = () => {
+          loadVideo(vid.url);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        grid.appendChild(card);
+      });
+      document.getElementById('video-count').textContent = `Se encontraron ${filtered.length} clases disponibles`;
+      lucide.createIcons();
+    }
+
+    function loadVideo(url) {
+      if (Hls.isSupported()) {
+        hls.loadSource(url);
+        hls.attachMedia(player);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => player.play().catch(() => {}));
+      } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+        player.src = url;
+      }
+    }
+
+    // --- LÓGICA DE LOGIN Y UI ---
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    document.getElementById('menu-open').onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); };
+    overlay.onclick = closeMenu;
+    function closeMenu() { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
+
+    function handleLogin() {
+      const code = document.getElementById('accessCode').value.trim();
+      const user = ESTUDIANTES_DB.find(u => u.codigo === code);
+      if (user && user.activo === 1) {
+        localStorage.setItem('ceta_session', JSON.stringify(user));
+        renderDashboard(user.nombre);
+      } else {
+        const err = document.getElementById('login-error');
+        err.textContent = "Código inválido o acceso revocado.";
+        err.style.display = "block";
+      }
+    }
+
+    function renderDashboard(name) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-dashboard').style.display = 'block';
+      document.getElementById('user-display').textContent = `¡Bienvenido, ${name.split(' ')[0]}!`;
+      generateMenu();
+      applyFilters();
+      if(VIDEOS_DB.length > 0) loadVideo(VIDEOS_DB[0].url);
+    }
+
+    const darkBtn = document.getElementById('dark-toggle');
+    darkBtn.onclick = () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('ceta_dark', isDark);
+      darkBtn.querySelector('span').textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
+      darkBtn.querySelector('i').setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+      lucide.createIcons();
+    };
+
+    function handleLogout() { localStorage.removeItem('ceta_session'); location.reload(); }
+
+    window.onload = () => {
+      if(localStorage.getItem('ceta_dark') === 'true') {
+        document.body.classList.add('dark');
+        darkBtn.querySelector('span').textContent = 'Modo Claro';
+      }
+      const session = localStorage.getItem('ceta_session');
+      if(session) renderDashboard(JSON.parse(session).nombre);
+      lucide.createIcons();
+    };
+
+    // Seguridad: Bloqueo de inspección básica
+    document.onkeydown = (e) => {
+      if(e.keyCode == 123 || (e.ctrlKey && (e.shiftKey && e.keyCode == 73)) || (e.ctrlKey && e.keyCode == 85)) return false;
+    };
+  </script>
+</body>
+</html>

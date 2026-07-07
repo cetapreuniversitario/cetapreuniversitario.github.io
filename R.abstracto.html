@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Pro | Ing. Teddy Valencia</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root { --primary: #0a2b44; --secondary: #2c7da0; --accent: #d9534f; --bg: #f4f7f9; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: var(--bg); padding: 20px; }
+        .container { max-width: 1300px; margin: 0 auto; background: white; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); padding: 40px; }
+        header { border-bottom: 4px solid var(--secondary); margin-bottom: 30px; padding-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 25px; border: none; border-radius: 50px; cursor: pointer; background: #e2e8f0; font-weight: bold; transition: 0.3s; color: #475569; }
+        .tab-btn.active { background: var(--secondary); color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(44, 125, 160, 0.3); }
+        .question-card { border: 1px solid #edf2f7; border-radius: 20px; padding: 25px; margin-bottom: 25px; page-break-inside: avoid; background: #fff; }
+        .q-header { display: flex; gap: 12px; align-items: center; margin-bottom: 15px; border-left: 5px solid var(--secondary); padding-left: 15px; }
+        .q-num { background: var(--primary); color: white; padding: 4px 12px; border-radius: 8px; font-size: 0.9rem; }
+        .graphic-area { background: #f8fafc; padding: 25px; border-radius: 15px; text-align: center; margin: 15px 0; border: 2px dashed #cbd5e1; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 15px; }
+        .opt { border: 2px solid #f1f5f9; padding: 15px; border-radius: 15px; text-align: center; background: white; transition: 0.2s; }
+        .opt-label { font-weight: 800; color: var(--secondary); display: block; margin-bottom: 8px; }
+        .btn-group { display: flex; gap: 20px; margin-top: 40px; padding-top: 30px; border-top: 2px solid #f1f5f9; }
+        .btn { padding: 15px 35px; border: none; border-radius: 50px; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 10px; font-size: 1rem; }
+        .btn-pdf { background: var(--accent); }
+        .btn-word { background: #2b5797; }
+        canvas { max-width: 100%; height: auto; }
+        .answer-key { margin-top: 50px; border: 2px solid #333; padding: 20px; border-radius: 10px; }
+        .answer-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .answer-table td, .answer-table th { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-content">
+    <header>
+        <div>
+            <h1 style="color: var(--primary)">SISTEMA INTEGRAL DE RAZONAMIENTO ABSTRACTO</h1>
+            <p>Especialista: <b>Ing. Teddy Fidel Valencia Castro. Mgtr</b> | Clover Technology</p>
+        </div>
+        <div style="text-align: right; color: var(--secondary); font-weight: bold;">Chone, Ecuador</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="changeLevel('facil')">📘 NIVEL FÁCIL (150)</button>
+        <button class="tab-btn" onclick="changeLevel('intermedio')">📙 NIVEL INTERMEDIO (150)</button>
+        <button class="tab-btn" onclick="changeLevel('dificil')">📕 NIVEL DIFÍCIL (150)</button>
+    </div>
+
+    <div id="questions-container"></div>
+
+    <div class="btn-group">
+        <button class="btn btn-word" onclick="exportWord()">📂 DESCARGAR WORD COMPLETO</button>
+        <button class="btn btn-pdf" onclick="exportPDF()">📋 DESCARGAR PDF + RESPUESTAS</button>
+    </div>
+</div>
+
+<script>
+    const topics = [
+        { name: 'Abstracción Espacial', draw: drawSpatial },
+        { name: 'Series Gráficas', draw: drawSeries },
+        { name: 'Figuras Incompletas', draw: drawIncomplete },
+        { name: 'Relaciones Analógicas', draw: drawAnalogy },
+        { name: 'Transformación de Figuras', draw: drawTransform }
+    ];
+    
+    let currentLevel = 'facil';
+    let database = [];
+
+    // Motores de dibujo dinámico
+    function drawSpatial(ctx) {
+        ctx.strokeRect(20, 30, 60, 40);
+        ctx.moveTo(20,30); ctx.lineTo(40,10); ctx.lineTo(100,10); ctx.lineTo(80,30);
+        ctx.lineTo(80,70); ctx.lineTo(20,70); ctx.lineTo(20,30);
+        ctx.moveTo(100,10); ctx.lineTo(100,50); ctx.lineTo(80,70);
+        ctx.stroke();
+    }
+    function drawSeries(ctx) {
+        for(let i=0; i<3; i++) { ctx.strokeRect(10 + (i*45), 25, 35, 35); ctx.fillText("?", 22+(i*45), 45); }
+    }
+    function drawIncomplete(ctx) {
+        ctx.arc(50, 50, 40, 0, Math.PI * 1.5); ctx.stroke();
+        ctx.setLineDash([5, 5]); ctx.arc(50, 50, 40, Math.PI * 1.5, 0); ctx.stroke();
+    }
+    function drawAnalogy(ctx) {
+        ctx.strokeRect(10, 30, 30, 30); ctx.fillText(" es a ", 45, 50); ctx.arc(90, 45, 15, 0, Math.PI*2); ctx.stroke();
+    }
+    function drawTransform(ctx) {
+        ctx.rotate(45 * Math.PI / 180); ctx.strokeRect(40, -10, 40, 40); ctx.stroke();
+    }
+
+    function init() {
+        database = [];
+        ['facil', 'intermedio', 'dificil'].forEach(lvl => {
+            topics.forEach(topic => {
+                for(let i=1; i<=30; i++) {
+                    database.push({
+                        level: lvl,
+                        topic: topic.name,
+                        drawFunc: topic.draw,
+                        correct: Math.floor(Math.random() * 4)
+                    });
+                }
+            });
+        });
+        render();
+    }
+
+    function render() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+        const filtered = database.filter(q => q.level === currentLevel);
+
+        filtered.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            const qId = `q_${currentLevel}_${idx}`;
+            card.innerHTML = `
+                <div class="q-header"><span class="q-num">${idx + 1}</span> <b>${q.topic}</b></div>
+                <p>Identifique la figura que completa la secuencia o relación lógica:</p>
+                <div class="graphic-area"><canvas id="main_${qId}" width="150" height="100"></canvas></div>
+                <div class="options-grid">
+                    ${['A','B','C','D'].map((l, i) => `
+                        <div class="opt"><span class="opt-label">${l}</span><canvas id="opt_${qId}_${i}" width="100" height="80"></canvas></div>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(card);
+            q.drawFunc(document.getElementById(`main_${qId}`).getContext('2d'));
+            ['A','B','C','D'].forEach((_, i) => q.drawFunc(document.getElementById(`opt_${qId}_${i}`).getContext('2d')));
+        });
+    }
+
+    function changeLevel(lvl) {
+        currentLevel = lvl;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        render();
+    }
+
+    function generateAnswerSheetHTML() {
+        const filtered = database.filter(q => q.level === currentLevel);
+        let table = `<div class="answer-key"><h2>HOJA DE RESPUESTAS - ${currentLevel.toUpperCase()}</h2><table class="answer-table"><tr>`;
+        for(let i=1; i<=150; i++) {
+            table += `<td><b>${i}:</b> ${['A','B','C','D'][filtered[i-1].correct]}</td>`;
+            if(i % 10 === 0) table += `</tr><tr>`;
+        }
+        table += `</tr></table></div>`;
+        return table;
+    }
+
+    async function exportPDF() {
+        const element = document.createElement('div');
+        element.style.padding = "20px";
+        element.innerHTML = `<h1>Simulador Clover Technology - Nivel ${currentLevel}</h1>` + 
+                            document.getElementById('questions-container').innerHTML + 
+                            generateAnswerSheetHTML();
+        
+        const opt = {  
+            margin: 10, 
+            filename: `Simulador_TeddyValencia_${currentLevel}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().from(element).save();
+    }
+
+    function exportWord() {
+        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'></head><body>";
+        const content = document.getElementById('main-content').innerHTML + generateAnswerSheetHTML();
+        const footer = "</body></html>";
+        const blob = new Blob(['\ufeff', header + content + footer], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Evaluacion_Abstracto_${currentLevel}.doc`;
+        link.click();
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

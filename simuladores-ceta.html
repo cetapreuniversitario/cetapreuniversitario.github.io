@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CETA Los Naranjos | Plataforma Académica</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --sidebar-bg: #0f172a;
+      --sidebar-text: #94a3b8;
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --text-dark: #1e293b;
+      --border: #e2e8f0;
+      --accent-math: #3b82f6;
+      --accent-chem: #10b981;
+      --accent-verbal: #f59e0b;
+      --accent-abstract: #8b5cf6;
+      --accent-exam: #ef4444; /* Color para Examen General */
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.dark {
+      --bg-main: #020617;
+      --card-bg: #1e293b;
+      --text-dark: #f1f5f9;
+      --border: #334155;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    /* --- LOGIN ESTILIZADO --- */
+    #login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #1e293b, #0f172a);
+      padding: 20px;
+    }
+
+    .login-card {
+      background: white;
+      padding: 3rem 2rem;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-circle {
+      width: 80px;
+      height: 80px;
+      background: var(--primary);
+      border-radius: 20px;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      transform: rotate(-10deg);
+    }
+
+    .login-card h2 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #0f172a; }
+    .login-card p { color: #64748b; margin-bottom: 2rem; font-size: 0.9rem; }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      transition: var(--transition);
+    }
+
+    .input-field:focus { border-color: var(--primary); outline: none; }
+
+    .btn-primary {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+    /* --- LAYOUT CON SIDEBAR --- */
+    #main-dashboard { display: none; }
+
+    .layout-wrapper { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 280px;
+      background: var(--sidebar-bg);
+      color: white;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+      transition: var(--transition);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      margin-bottom: 3rem;
+    }
+
+    .nav-menu { flex-grow: 1; list-style: none; }
+    .nav-item { margin-bottom: 0.5rem; }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      border-radius: 12px;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .sidebar-footer {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .main-content {
+      flex-grow: 1;
+      margin-left: 280px;
+      padding: 2rem;
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+    }
+
+    .hamburger { display: none; cursor: pointer; color: var(--text-dark); }
+
+    .grid-courses {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .course-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .course-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); }
+
+    .course-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2rem;
+      color: white;
+    }
+
+    .sim-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: var(--bg-main);
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text-dark);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    .sim-link:hover { background: var(--primary); color: white; }
+
+    @media (max-width: 1024px) {
+      .sidebar { left: -280px; }
+      .sidebar.active { left: 0; }
+      .main-content { margin-left: 0; }
+      .hamburger { display: block; }
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+      }
+      .overlay.active { display: block; }
+    }
+
+    .error-msg { 
+      color: #ef4444; 
+      font-size: 0.85rem; 
+      margin-bottom: 1rem; 
+      display: none; 
+      background: #fee2e2;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="overlay"></div>
+
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="logo-circle"><i data-lucide="graduation-cap" size="40"></i></div>
+      <h2>CETA PreUniversitario</h2>
+      <p>Plataforma de Preparación Académica</p>
+      
+      <div id="login-error" class="error-msg"></div>
+
+      <input type="text" id="accessCode" class="input-field" placeholder="Código de acceso" onkeypress="checkEnter(event)">
+      <button class="btn-primary" onclick="handleLogin()">Ingresar al Sistema</button>
+    </div>
+  </div>
+
+  <div id="main-dashboard">
+    <div class="layout-wrapper">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <i data-lucide="book-open-check"></i>
+          <span>CETA PreUniversitario</span>
+        </div>
+
+        <nav class="nav-menu">
+          <li class="nav-item">
+            <a href="#" class="nav-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+          </li> 
+          <li class="nav-item">
+            <a href="videoclass.html" class="nav-link"><i data-lucide="video"></i> Clases Grabadas</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link"><i data-lucide="calendar"></i> Horarios - PRÓXIMAMENTE</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link" id="dark-toggle"><i data-lucide="moon"></i> Modo Oscuro</a>
+          </li>
+        </nav>
+
+        <div class="sidebar-footer">
+          <a href="#" onclick="handleLogout()" class="nav-link" style="color: #ef4444;">
+            <i data-lucide="log-out"></i> Cerrar Sesión
+          </a>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header>
+          <div class="hamburger" id="ham-menu"><i data-lucide="menu" size="32"></i></div>
+          <div>
+            <h1 id="user-display-name">Bienvenido</h1>
+            <p style="color: var(--sidebar-text)">¿Qué planeas estudiar hoy?</p>
+          </div>
+          <div class="user-pill" style="background: var(--card-bg); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
+              <i data-lucide="user" size="18"></i>
+            </div>
+            <span style="font-weight: 600; font-size: 0.9rem;">Estudiante Activo</span>
+          </div>
+        </header>
+
+        <div class="grid-courses">
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-math);"><i data-lucide="calculator"></i></div>
+            <h3>Matemáticas</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Álgebra, Geometría y Cálculo.</p>
+            <a href="simulador-matemático.html" class="sim-link">Simulador Mate 1 <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador-mate2.html" class="sim-link">Simulador Mate 2 <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador-mate3.html" class="sim-link">Simulador Mate 3 <i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-chem);"><i data-lucide="flask-conical"></i></div>
+            <h3>Química</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Química Orgánica e Inorgánica.</p>
+            <a href="simulador_quimica.html" class="sim-link">Simulador de Química 1<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_quimica2.html" class="sim-link">Simulador de Química 2<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_quimica3.html" class="sim-link">Simulador de Química 3<i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-verbal);"><i data-lucide="languages"></i></div>
+            <h3>R. Verbal</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Comprensión y Analogías.</p>
+            <a href="simulador-razonamiento-verbal.html" class="sim-link">Simulador Verbal 1<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_r_verbal2.html" class="sim-link">Simulador Verbal 2<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_r_verbal3.html" class="sim-link">Simulador Verbal 3<i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-abstract);"><i data-lucide="layers"></i></div>
+            <h3>R. Abstracto - Próximamente</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Series y Matrices espaciales.</p>
+            <a href="#" class="sim-link">Secuencias Lógicas - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="#" class="sim-link">Matrices Espaciales - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+
+          <div class="course-card">
+            <div class="course-badge" style="background: var(--accent-exam);"><i data-lucide="file-text"></i></div>
+            <h3>Examen General - Próximamente</h3>
+            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Simulacros integrales cronometrados.</p>
+            <a href="#" class="sim-link">Examen Piloto 1 - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="#" class="sim-link">Examen Piloto 2 - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+            <a href="#" class="sim-link">Simulacro Final - Próximamente <i data-lucide="chevron-right" size="14"></i></a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // --- BASE DE DATOS DE ESTUDIANTES ---
+    const ESTUDIANTES_DB = [
+      { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
+      { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 },
+      { codigo: "Estudiante3-CETA", nombre: "Marcos Torres", activo: 0 },
+    ];
+
+    for(let i = 4; i <= 25; i++) {
+      ESTUDIANTES_DB.push({ codigo: `Estudiante${i}-CETA`, nombre: `Estudiante Ejemplo ${i}`, activo: 1 });
+    }
+
+    const hamMenu = document.getElementById('ham-menu');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const darkToggle = document.getElementById('dark-toggle');
+
+    function handleLogin() {
+      const codeInput = document.getElementById('accessCode');
+      const code = codeInput.value.trim();
+      const user = ESTUDIANTES_DB.find(u => u.codigo === code);
+
+      if (!user) {
+        showError("Código de acceso no válido.");
+        return;
+      }
+
+      if (user.activo === 0) {
+        showError("Tu acceso ha sido deshabilitado. Contacta con administración del CETA Chone.");
+        return;
+      }
+
+      localStorage.setItem('ceta_session', JSON.stringify(user));
+      renderDashboard(user.nombre);
+    }
+
+    function showError(mensaje) {
+      const e = document.getElementById('login-error');
+      e.textContent = mensaje; 
+      e.style.display = 'block';
+    }
+
+    function renderDashboard(name) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-dashboard').style.display = 'block';
+      document.getElementById('user-display-name').textContent = `Hola, ${name.split(' ')[0]}`;
+      lucide.createIcons();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('ceta_session');
+      location.reload();
+    }
+
+    function checkEnter(e) { 
+      if(e.key === 'Enter') handleLogin(); 
+    } 
+
+    hamMenu.onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); }
+    overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
+
+    darkToggle.onclick = (e) => {
+      e.preventDefault();
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('ceta_dark', isDark);
+      darkToggle.innerHTML = isDark ? '<i data-lucide="sun"></i> Modo Claro' : '<i data-lucide="moon"></i> Modo Oscuro';
+      lucide.createIcons();
+    };
+
+    window.onload = () => {
+      lucide.createIcons();
+      if(localStorage.getItem('ceta_dark') === 'true') {
+        document.body.classList.add('dark');
+        darkToggle.innerHTML = '<i data-lucide="sun"></i> Modo Claro';
+        lucide.createIcons();
+      }
+
+      const session = localStorage.getItem('ceta_session');
+      if(session) {
+        const userSession = JSON.parse(session);
+        const userCheck = ESTUDIANTES_DB.find(u => u.codigo === userSession.codigo);
+        if(userCheck && userCheck.activo === 1) {
+          renderDashboard(userCheck.nombre);
+        } else {
+          localStorage.removeItem('ceta_session');
+        }
+      }
+    };
+  </script>
+</body>
+</html>
