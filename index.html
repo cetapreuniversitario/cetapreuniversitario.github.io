@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght=0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         /* ===== RESET & BASE ===== */
         * {
@@ -107,7 +107,7 @@
             padding: 0 24px;
         }
 
-        /* ===== LOADER ===== */
+        /* ===== LOADER MEJORADO ===== */
         .loader {
             position: fixed;
             inset: 0;
@@ -124,25 +124,52 @@
             visibility: hidden;
         }
         .loader-logo {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            margin-bottom: 32px;
+        }
+        .loader-logo i {
+            font-size: 4.5rem;
+            color: #e8b931;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 24px;
+            border-radius: 50%;
+            border: 2px solid rgba(232, 185, 49, 0.3);
+            box-shadow: 0 0 40px rgba(232, 185, 49, 0.15);
+            animation: pulseIcon 1.6s infinite ease-in-out;
+        }
+        .loader-logo span {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
             font-weight: 700;
             color: #fff;
-            margin-bottom: 24px;
-            animation: pulse 1.5s infinite;
+            letter-spacing: 2px;
+            margin-top: 16px;
+            text-shadow: 0 2px 12px rgba(0,0,0,0.3);
         }
+        .loader-logo span i {
+            font-size: inherit;
+            color: #e8b931;
+            background: none;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+            animation: none;
+        }
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+        }
+
         .loader-bar {
-            width: 200px;
+            width: 220px;
             height: 4px;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 4px;
             overflow: hidden;
+            box-shadow: 0 0 12px rgba(232, 185, 49, 0.2);
         }
         .loader-bar-inner {
             height: 100%;
@@ -150,10 +177,6 @@
             background: #e8b931;
             border-radius: 4px;
             transition: width 0.1s linear;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.08); opacity: 1; }
         }
 
         /* ===== HEADER ===== */
@@ -1024,6 +1047,14 @@
                 margin: 0;
             }
 
+            .loader-img {
+    width: 50px;       /* Ajusta el ancho según lo necesites */
+    height: auto;       /* Mantiene la proporción de la imagen */
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle; /* Ayuda a que se alinee bien con el texto de al lado */
+}
+
             section {
                 padding: 60px 0;
             }
@@ -1080,12 +1111,15 @@
 </head>
 <body>
 
-    <div class="loader" id="loader">
-        <div class="loader-logo">CETA</div>
-        <div class="loader-bar">
-            <div class="loader-bar-inner" id="loaderProgress"></div>
-        </div>
+   <div class="loader" id="loader">
+    <div class="loader-logo">
+        <img src="icono.png" alt="Logo CETA" class="loader-img">
+        <span>CETA PREUNIVERSITARIO</span>
     </div>
+    <div class="loader-bar">
+        <div class="loader-bar-inner" id="loaderProgress"></div>
+    </div>
+</div>
 
     <header id="header">
         <div class="container header-inner">
