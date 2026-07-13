@@ -66,6 +66,7 @@
         body.dark-mode .contacto-item:hover,
         body.dark-mode .uni-card:hover,
         body.dark-mode .prueba-box:hover,
+        body.dark-mode .clases-box:hover,
         body.dark-mode .inscripcion-box:hover {
             border-color: var(--color-secondary);
             box-shadow: 0 0 20px rgba(232, 185, 49, 0.25);
@@ -544,6 +545,92 @@
         }
         .btn-sim-unico i {
             font-size: 1.4rem;
+        }
+
+        /* ===== CLASES VIRTUALES (MEET CON TABLA) ===== */
+        .clases-box {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--color-surface);
+            border-radius: var(--radius-lg);
+            padding: 48px 36px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .clases-box:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: #0f9d58; /* Color verde de Google Meet */
+        }
+        .clases-box .section-subtitle {
+            margin-bottom: 28px;
+        }
+        .clases-box .icon-meet {
+            font-size: 4rem;
+            color: #0f9d58;
+            margin-bottom: 16px;
+        }
+        body.dark-mode .clases-box:hover {
+            border-color: #0f9d58;
+            box-shadow: 0 0 20px rgba(15, 157, 88, 0.25);
+        }
+
+        .clases-table-container {
+            overflow-x: auto;
+            margin-top: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: var(--color-bg);
+        }
+        .clases-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .clases-table th, .clases-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.95rem;
+        }
+        .clases-table th {
+            background-color: rgba(10, 38, 71, 0.04);
+            font-weight: 600;
+            color: var(--color-primary);
+            white-space: nowrap;
+        }
+        body.dark-mode .clases-table th {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--color-secondary);
+        }
+        .clases-table tr:last-child th,
+        .clases-table tr:last-child td {
+            border-bottom: none;
+        }
+        .clases-table td {
+            color: var(--color-text);
+            vertical-align: middle;
+        }
+        .btn-meet-small {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #0f9d58;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-meet-small:hover {
+            background: #0b8043;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(15, 157, 88, 0.25);
         }
 
         /* ===== INSCRIPCIÓN ===== */
@@ -1048,12 +1135,12 @@
             }
 
             .loader-img {
-    width: 50px;       /* Ajusta el ancho según lo necesites */
-    height: auto;       /* Mantiene la proporción de la imagen */
-    object-fit: contain;
-    display: inline-block;
-    vertical-align: middle; /* Ayuda a que se alinee bien con el texto de al lado */
-}
+                width: 50px;
+                height: auto;
+                object-fit: contain;
+                display: inline-block;
+                vertical-align: middle;
+            }
 
             section {
                 padding: 60px 0;
@@ -1062,10 +1149,7 @@
                 grid-template-columns: 1fr;
                 gap: 0;
             }
-            .inscripcion-box {
-                padding: 32px 24px;
-            }
-            .prueba-box {
+            .inscripcion-box, .prueba-box, .clases-box {
                 padding: 32px 24px;
             }
             .directora-wrapper {
@@ -1106,6 +1190,10 @@
             .logo span {
                 font-size: 1rem;
             }
+            .btn-meet-small {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -1131,6 +1219,7 @@
                 <li><a href="#inicio" class="active">Inicio</a></li>
                 <li><a href="#cursos">Cursos</a></li>
                 <li><a href="#prueba">Simulador</a></li>
+                <li><a href="#clases">Clases Virtuales</a></li>
                 <li><a href="#inscripcion">Inscripción</a></li>
                 <li><a href="#universidades">Universidades</a></li>
                 <li><a href="#directora">Directora</a></li>
@@ -1230,6 +1319,45 @@
         </div>
     </section>
 
+    <!-- NUEVA SECCIÓN DE CLASES VIRTUALES (CON TABLA) -->
+    <section id="clases">
+        <div class="container">
+            <div class="clases-box">
+                <div class="icon-meet"><i class="fas fa-video"></i></div>
+                <h2 class="section-title">Aula <span class="highlight">Virtual</span></h2>
+                <p class="section-subtitle">
+                    Conéctate a tus sesiones en vivo a través de Google Meet. Revisa tu horario y accede directamente a tu sala virtual.
+                </p>
+                
+                <div class="clases-table-container">
+                    <table class="clases-table">
+                        <thead>
+                            <tr>
+                                <th>Asignatura</th>
+                                <th>Docente</th>
+                                <th>Día y Hora</th>
+                                <th>Conexión en Vivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Próximamente</td>
+                                <td>Próximamente</td>
+                                <td>Próximamente</td>
+                                <td>
+                                    <a href="#" target="_blank" class="btn-meet-small">
+                                        <i class="fas fa-video"></i> Entrar a clase
+                                    </a>
+                                </td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="inscripcion">
         <div class="container">
             <div class="inscripcion-box">
@@ -1316,7 +1444,7 @@
                 <div class="directora-info">
                     <h3>Ing. Teddy Valencia, Mgtr.</h3>
                     <div class="cargo">Director General de Docencia</div>
-                    <p>Especialista en alta gerencia educativa y diseño de modelos de evaluación psicométrica institucional. Con  años de trayectoria pedagógica activa en el aula, ha coordinado con éxito la capacitación técnica de miles de aspirantes hacia el ingreso efectivo a centros del más alto nivel académico de la nación.</p>
+                    <p>Especialista en alta gerencia educativa y diseño de modelos de evaluación psicométrica institucional. Con años de trayectoria pedagógica activa en el aula, ha coordinado con éxito la capacitación técnica de miles de aspirantes hacia el ingreso efectivo a centros del más alto nivel académico de la nación.</p>
                 </div>
             </div>
         </div>
