@@ -23,14 +23,15 @@
             --color-secondary: #e8b931;
             --color-secondary-light: #f5d76e;
             --color-accent: #3498db;
-            --color-bg: #f4f7fc;
-            --color-surface: #ffffff;
-            --color-text: #1e2a41;
-            --color-text-muted: #5a6e8a;
-            --color-border: #e2e8f0;
-            --shadow-sm: 0 4px 12px rgba(10, 38, 71, 0.05);
-            --shadow-md: 0 12px 34px rgba(10, 38, 71, 0.08);
-            --shadow-lg: 0 24px 68px rgba(10, 38, 71, 0.14);
+            --color-bg: #07111e;                /* Fondo general oscuro por defecto */
+            --color-section-bg: #07111e;        /* Fondo unificado de todas las secciones */
+            --color-surface: #0f223a;           /* Superficie de tarjetas y cajas */
+            --color-text: #f4f7fc;
+            --color-text-muted: #a0aec0;
+            --color-border: #1a3a6b;
+            --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.4);
+            --shadow-md: 0 8px 36px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 20px 64px rgba(0, 0, 0, 0.7);
             --radius-md: 16px;
             --radius-lg: 24px;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -38,56 +39,45 @@
             --font-serif: 'Playfair Display', serif;
         }
 
-        body.dark-mode {
-            --color-bg: #07111e;
-            --color-surface: #0f223a;
-            --color-text: #f4f7fc;
-            --color-text-muted: #a0aec0;
-            --color-border: #1a3a6b;
-            --color-primary: #e8b931;
-            --color-primary-light: #f5d76e;
-            --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 8px 36px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 20px 64px rgba(0, 0, 0, 0.7);
-        }
-
-        body.dark-mode header {
-            background: rgba(15, 34, 58, 0.94);
-            border-bottom: 1px solid var(--color-secondary);
-        }
-
-        body.dark-mode .logo,
-        body.dark-mode .nav-menu a:hover,
-        body.dark-mode .nav-menu a.active {
-            color: var(--color-secondary);
-        }
-
-        body.dark-mode .curso-card:hover,
-        body.dark-mode .contacto-item:hover,
-        body.dark-mode .uni-card:hover,
-        body.dark-mode .prueba-box:hover,
-        body.dark-mode .clases-box:hover,
-        body.dark-mode .inscripcion-box:hover {
-            border-color: var(--color-secondary);
-            box-shadow: 0 0 20px rgba(232, 185, 49, 0.25);
-        }
-
-        body.dark-mode footer {
-            background: #0f223a;
-            border-top: 2px solid #e8b931;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        /* Ya no hay modo claro, todo es oscuro por defecto */
         body {
             font-family: var(--font-sans);
             background-color: var(--color-bg);
             color: var(--color-text);
             line-height: 1.6;
             overflow-x: hidden;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.45s ease, color 0.45s ease;
+        }
+
+        /* Encabezado oscuro */
+        header {
+            background: rgba(15, 34, 58, 0.94);
+            border-bottom: 1px solid var(--color-secondary);
+        }
+
+        .logo,
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            color: var(--color-secondary);
+        }
+
+        .curso-card:hover,
+        .contacto-item:hover,
+        .uni-card:hover,
+        .prueba-box:hover,
+        .clases-box:hover,
+        .inscripcion-box:hover {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 20px rgba(232, 185, 49, 0.25);
+        }
+
+        footer {
+            background: #0f223a;
+            border-top: 2px solid #e8b931;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         img {
@@ -108,7 +98,7 @@
             padding: 0 24px;
         }
 
-        /* ===== LOADER (IMAGEN 30% MÁS GRANDE) ===== */
+        /* ===== LOADER ===== */
         .loader {
             position: fixed;
             inset: 0;
@@ -123,7 +113,6 @@
             overflow: hidden;
         }
 
-        /* Halo dorado de fondo (escalado +30%) */
         .loader::before {
             content: '';
             position: absolute;
@@ -147,7 +136,6 @@
             visibility: hidden;
         }
 
-        /* --- LOGO / IMAGEN icono.png (GRANDE Y PROTAGÓNICA +30%) --- */
         .loader-logo {
             display: flex;
             flex-direction: column;
@@ -159,7 +147,6 @@
         }
 
         .loader-logo .loader-img {
-            /* Imagen grande, fluida y visible (+30% respecto al tamaño anterior) */
             width: clamp(312px, 91vw, 494px);
             max-width: 92vw;
             height: auto;
@@ -234,10 +221,8 @@
             left: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--color-border);
             transition: var(--transition);
         }
         header.scrolled {
@@ -256,7 +241,6 @@
             gap: 12px;
             font-weight: 700;
             font-size: 1.15rem;
-            color: #0a2647;
             flex-shrink: 0;
         }
         .logo img {
@@ -299,7 +283,7 @@
             transition: var(--transition);
         }
         .nav-menu a:hover, .nav-menu a.active {
-            color: #0a2647;
+            color: var(--color-secondary);
         }
         .nav-menu a:hover::after, .nav-menu a.active::after {
             width: 100%;
@@ -336,9 +320,6 @@
         .nav-menu a.nav-plataforma i {
             font-size: 0.95rem;
         }
-        body.dark-mode .nav-menu a.nav-plataforma {
-            color: #0a2647 !important;
-        }
 
         .nav-actions {
             display: flex;
@@ -367,14 +348,11 @@
         .hamburger {
             display: none;
             font-size: 1.4rem;
-            color: #0a2647;
+            color: var(--color-secondary);
             cursor: pointer;
             background: none;
             border: none;
             padding: 4px;
-        }
-        body.dark-mode .hamburger {
-            color: var(--color-secondary);
         }
 
         /* ===== HERO ===== */
@@ -502,8 +480,33 @@
             padding: 80px 0;
             opacity: 0;
             transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.45s ease;
         }
+
+        /* Fondo unificado para todas las secciones después del banner */
+        section:not(.hero) {
+            background-color: var(--color-section-bg);
+        }
+
+        /* Tarjetas y cajas con superficie oscura */
+        .curso-card,
+        .prueba-box,
+        .clases-box,
+        .inscripcion-box,
+        .uni-card,
+        .directora-wrapper,
+        .contacto-item,
+        .qr-card,
+        .map-wrapper,
+        .historia-box,
+        .clases-table-container {
+            background-color: var(--color-surface);
+            transition: background-color 0.45s ease,
+                        border-color 0.3s ease,
+                        box-shadow 0.3s ease,
+                        transform 0.3s ease;
+        }
+
         .section-title {
             font-family: var(--font-serif);
             font-size: clamp(2rem, 4vw, 2.8rem);
@@ -537,7 +540,6 @@
             text-align: center;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--color-border);
-            transition: var(--transition);
         }
         .curso-card:hover {
             transform: translateY(-6px);
@@ -547,7 +549,7 @@
         .curso-card .icon {
             width: 64px;
             height: 64px;
-            background: rgba(10, 38, 71, 0.05);
+            background: rgba(232, 185, 49, 0.10);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -556,9 +558,6 @@
             font-size: 1.75rem;
             color: var(--color-text);
             transition: var(--transition);
-        }
-        body:not(.dark-mode) .curso-card .icon {
-            color: #0a2647;
         }
         .curso-card:hover .icon {
             background: #e8b931;
@@ -583,7 +582,6 @@
             padding: 48px 36px;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--color-border);
-            transition: var(--transition);
             text-align: center;
         }
         .prueba-box:hover {
@@ -602,8 +600,8 @@
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            background: #0a2647;
-            color: #fff;
+            background: #e8b931;
+            color: #0a2647;
             border: none;
             padding: 16px 40px;
             border-radius: 50px;
@@ -611,20 +609,12 @@
             font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: 0 6px 24px rgba(10, 38, 71, 0.15);
-        }
-        body.dark-mode .btn-sim-unico {
-            background: #e8b931;
-            color: #0a2647;
+            box-shadow: 0 6px 24px rgba(232, 185, 49, 0.3);
         }
         .btn-sim-unico:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 32px rgba(10, 38, 71, 0.25);
-            background: #1a3a6b;
-        }
-        body.dark-mode .btn-sim-unico:hover {
+            box-shadow: 0 10px 32px rgba(232, 185, 49, 0.5);
             background: #f5d76e;
-            box-shadow: 0 10px 32px rgba(232, 185, 49, 0.3);
         }
         .btn-sim-unico i {
             font-size: 1.4rem;
@@ -637,11 +627,11 @@
         .plataforma-box {
             max-width: 900px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #0a2647 0%, #1a3a6b 55%, #0a2647 100%);
+            background: linear-gradient(135deg, #0f223a 0%, #17325c 55%, #0f223a 100%);
             border-radius: var(--radius-lg);
             padding: 56px 40px;
             box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(232, 185, 49, 0.25);
+            border: 1px solid rgba(232, 185, 49, 0.5);
             transition: var(--transition);
             text-align: center;
             color: #fff;
@@ -655,7 +645,7 @@
             right: -120px;
             width: 380px;
             height: 380px;
-            background: radial-gradient(circle, rgba(232, 185, 49, 0.22) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(232, 185, 49, 0.30) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -666,7 +656,7 @@
             left: -120px;
             width: 340px;
             height: 340px;
-            background: radial-gradient(circle, rgba(52, 152, 219, 0.18) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.28) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -675,7 +665,7 @@
             z-index: 1;
         }
         .plataforma-box:hover {
-            box-shadow: 0 32px 80px rgba(10, 38, 71, 0.35);
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.75);
             border-color: #e8b931;
         }
         .plataforma-box .icon-plataforma {
@@ -687,8 +677,8 @@
             justify-content: center;
             font-size: 2.6rem;
             color: #e8b931;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(232, 185, 49, 0.35);
+            background: rgba(232, 185, 49, 0.10);
+            border: 2px solid rgba(232, 185, 49, 0.55);
             border-radius: 50%;
             box-shadow: 0 0 40px rgba(232, 185, 49, 0.15);
             animation: pulseIcon 2.6s infinite ease-in-out;
@@ -772,7 +762,6 @@
             padding: 48px 36px;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--color-border);
-            transition: var(--transition);
             text-align: center;
         }
         .clases-box:hover {
@@ -787,17 +776,13 @@
             color: #0f9d58;
             margin-bottom: 16px;
         }
-        body.dark-mode .clases-box:hover {
-            border-color: #0f9d58;
-            box-shadow: 0 0 20px rgba(15, 157, 88, 0.25);
-        }
 
         .clases-table-container {
             overflow-x: auto;
             margin-top: 24px;
             border-radius: var(--radius-md);
             border: 1px solid var(--color-border);
-            background: var(--color-bg);
+            background: var(--color-surface);
         }
         .clases-table {
             width: 100%;
@@ -810,14 +795,10 @@
             font-size: 0.95rem;
         }
         .clases-table th {
-            background-color: rgba(10, 38, 71, 0.04);
-            font-weight: 600;
-            color: var(--color-primary);
-            white-space: nowrap;
-        }
-        body.dark-mode .clases-table th {
             background-color: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
             color: var(--color-secondary);
+            white-space: nowrap;
         }
         .clases-table tr:last-child th,
         .clases-table tr:last-child td {
@@ -858,7 +839,6 @@
             padding: 48px 40px;
             box-shadow: var(--shadow-md);
             border: 1px solid var(--color-border);
-            transition: var(--transition);
         }
         .inscripcion-box:hover {
             box-shadow: var(--shadow-lg);
@@ -918,8 +898,8 @@
             padding: 14px;
             border: none;
             border-radius: 50px;
-            background: #0a2647;
-            color: #fff;
+            background: #e8b931;
+            color: #0a2647;
             font-weight: 700;
             font-size: 1.05rem;
             display: flex;
@@ -930,18 +910,10 @@
             transition: var(--transition);
             margin-top: 8px;
         }
-        body.dark-mode .btn-submit {
-            background: #e8b931;
-            color: #0a2647;
-        }
         .btn-submit:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 28px rgba(10, 38, 71, 0.2);
-            background: #1a3a6b;
-        }
-        body.dark-mode .btn-submit:hover {
-            background: #f5d76e;
             box-shadow: 0 8px 28px rgba(232, 185, 49, 0.25);
+            background: #f5d76e;
         }
 
         .form-message {
@@ -1014,7 +986,6 @@
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--color-border);
             border-left: 5px solid #e8b931;
-            transition: var(--transition);
         }
         .uni-card:hover {
             transform: translateY(-4px);
@@ -1040,6 +1011,27 @@
             font-weight: 600;
             color: var(--color-text-muted);
             border: 1px solid var(--color-border);
+        }
+
+        /* ===== HISTORIA ===== */
+        .historia-box {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--color-surface);
+            padding: 40px 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+        .historia-box p {
+            font-size: 1.05rem;
+            color: var(--color-text-muted);
+            line-height: 1.9;
+            text-align: justify;
+            margin: 0;
+        }
+        .historia-box strong {
+            color: var(--color-text);
         }
 
         /* ===== DIRECTORA ===== */
@@ -1106,7 +1098,6 @@
             padding: 16px 24px;
             border-radius: var(--radius-md);
             border: 1px solid var(--color-border);
-            transition: var(--transition);
         }
         .contacto-item:hover {
             box-shadow: var(--shadow-md);
@@ -1154,6 +1145,7 @@
             border-radius: 12px;
             margin-bottom: 16px;
             border: 4px solid var(--color-bg);
+            background: #fff;
         }
         .qr-card p {
             color: var(--color-text-muted);
@@ -1173,6 +1165,7 @@
             height: 350px;
             border: 0;
             display: block;
+            filter: invert(0.92) hue-rotate(180deg) brightness(0.95) contrast(0.9);
         }
         .map-caption {
             padding: 16px 20px;
@@ -1189,10 +1182,11 @@
 
         /* ===== FOOTER ===== */
         footer {
-            background: #0a2647;
+            background: #0f223a;
             color: #fff;
             padding: 48px 0 24px;
             margin-top: 40px;
+            border-top: 2px solid #e8b931;
         }
         .footer-inner {
             display: flex;
@@ -1231,15 +1225,6 @@
         }
 
         /* ===== BOTONES FLOTANTES ===== */
-        .floating-actions-right {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 999;
-        }
         .floating-actions-left {
             position: fixed;
             bottom: 24px;
@@ -1269,16 +1254,6 @@
         }
         .whatsapp-float:hover {
             background: #1ebe5a;
-        }
-        .theme-float {
-            background: #0a2647;
-            border: 2px solid #e8b931;
-            color: #e8b931;
-        }
-        body.dark-mode .theme-float {
-            background: #ffffff;
-            color: #0a2647;
-            border: none;
         }
 
         /* ===== RESPONSIVE ===== */
@@ -1382,7 +1357,6 @@
                 margin: 0;
             }
 
-            /* ====== LOADER MÓVIL: IMAGEN GRANDE (+30%) ====== */
             .loader-logo {
                 margin-bottom: 39px;
             }
@@ -1441,14 +1415,16 @@
                 grid-template-columns: 1fr;
                 gap: 24px;
             }
-            
+            .historia-box {
+                padding: 32px 22px;
+            }
+
             .btn-float {
                 width: 46px;
                 height: 46px;
                 font-size: 1.25rem;
             }
             .floating-actions-left { bottom: 16px; left: 16px; }
-            .floating-actions-right { bottom: 16px; right: 16px; }
         }
 
         @media (max-width: 480px) {
@@ -1482,7 +1458,6 @@
                 font-size: 0.78rem;
                 padding: 7px 14px;
             }
-            /* Imagen del loader aún más grande proporcionalmente en móviles pequeños (+30%) */
             .loader-logo .loader-img {
                 width: clamp(273px, 90vw, 390px);
                 max-width: 90vw;
@@ -1495,9 +1470,9 @@
         }
     </style>
 </head>
-<body>
+<body class="dark-mode"> <!-- Modo oscuro activado por defecto -->
 
-    <!-- ===== LOADER (IMAGEN 30% MÁS GRANDE) ===== -->
+    <!-- ===== LOADER ===== -->
     <div class="loader" id="loader">
         <div class="loader-logo">
             <img src="icono.png" alt="CETA PREUNIVERSITARIO" class="loader-img">
@@ -1654,7 +1629,7 @@
                 <p class="section-subtitle">
                     Conéctate a tus sesiones en vivo a través de Google Meet. Revisa tu horario y accede directamente a tu sala virtual.
                 </p>
-                
+
                 <div class="clases-table-container">
                     <table class="clases-table">
                         <thead>
@@ -1753,8 +1728,8 @@
     <section id="historia">
         <div class="container">
             <h2 class="section-title">Preparación con <span class="highlight">Propósito</span></h2>
-            <div style="max-width: 850px; margin: 0 auto; background: var(--color-surface); padding: 40px 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);">
-                <p style="font-size: 1.05rem; color: var(--color-text-muted); line-height: 1.9; text-align: justify; margin: 0;">
+            <div class="historia-box">
+                <p>
                     Desde hace más de 2 años, el <strong>"CETA PREUNIVERSITARIO"</strong> se consolida como el eje estratégico para la preparación preuniversitaria de alto rendimiento en el país. Nuestra arquitectura pedagógica integral abarca las dimensiones críticas del conocimiento abstracto, lógico y analítico. Gracias al desarrollo continuo de simulaciones adaptativas y la provisión didáctica validada por comités especializados, garantizamos una inserción competitiva óptima en las instituciones de educación superior públicas y privadas de mayor prestigio.
                 </p>
             </div>
@@ -1839,16 +1814,11 @@
         </div>
     </footer>
 
+    <!-- Solo queda el botón flotante de WhatsApp -->
     <div class="floating-actions-left">
         <a href="https://wa.me/+593988468474?text=Hola%2C%20deseo%20informaci%C3%B3n%20sobre%20el%20preuniversitario%20y%20simuladores" class="btn-float whatsapp-float" target="_blank" aria-label="WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>
-    </div>
-
-    <div class="floating-actions-right">
-        <button class="btn-float theme-float" id="themeToggleBtn" aria-label="Alternar modo oscuro">
-            <i class="fas fa-moon"></i>
-        </button>
     </div>
 
     <script>
@@ -1965,7 +1935,7 @@
                         e.stopPropagation();
                         navMenu.classList.toggle('open');
                     });
-                    
+
                     document.addEventListener('click', (e) => {
                         if (!navMenu.contains(e.target) && !hamburger.contains(e.target)) {
                             navMenu.classList.remove('open');
@@ -2000,21 +1970,6 @@
                         header.classList.add('scrolled');
                     } else {
                         header.classList.remove('scrolled');
-                    }
-                });
-            }
-
-            // ----- MODO OSCURO -----
-            function initTheme() {
-                const themeBtn = document.getElementById('themeToggleBtn');
-                if (!themeBtn) return;
-                themeBtn.addEventListener('click', () => {
-                    document.body.classList.toggle('dark-mode');
-                    const icon = themeBtn.querySelector('i');
-                    if (document.body.classList.contains('dark-mode')) {
-                        icon.className = 'fas fa-sun';
-                    } else {
-                        icon.className = 'fas fa-moon';
                     }
                 });
             }
@@ -2071,7 +2026,6 @@
                 setInterval(updateDateTime, 1000);
                 initLoader();
                 initNav();
-                initTheme();
                 initForm();
 
                 const searchInput = document.getElementById('searchUni');
