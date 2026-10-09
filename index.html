@@ -108,7 +108,7 @@
             padding: 0 24px;
         }
 
-        /* ===== LOADER MEJORADO ===== */
+        /* ===== LOADER ===== */
         .loader {
             position: fixed;
             inset: 0;
@@ -230,7 +230,7 @@
             padding: 0;
         }
         @media (min-width: 1200px) {
-            .nav-menu { gap: 32px; }
+            .nav-menu { gap: 30px; }
         }
         .nav-menu a {
             font-size: 0.9rem;
@@ -255,6 +255,41 @@
         }
         .nav-menu a:hover::after, .nav-menu a.active::after {
             width: 100%;
+        }
+
+        /* ===== BOTÓN PLATAFORMA EN NAV ===== */
+        .nav-menu .nav-item-plataforma {
+            list-style: none;
+        }
+        .nav-menu a.nav-plataforma {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #e8b931 0%, #f5d76e 100%);
+            color: #0a2647 !important;
+            padding: 9px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.2px;
+            box-shadow: 0 4px 14px rgba(232, 185, 49, 0.35);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .nav-menu a.nav-plataforma::after {
+            display: none !important;
+        }
+        .nav-menu a.nav-plataforma:hover {
+            background: linear-gradient(135deg, #f5d76e 0%, #e8b931 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(232, 185, 49, 0.55);
+            color: #0a2647 !important;
+        }
+        .nav-menu a.nav-plataforma i {
+            font-size: 0.95rem;
+        }
+        body.dark-mode .nav-menu a.nav-plataforma {
+            color: #0a2647 !important;
         }
 
         .nav-actions {
@@ -547,7 +582,140 @@
             font-size: 1.4rem;
         }
 
-        /* ===== CLASES VIRTUALES (MEET CON TABLA) ===== */
+        /* ===== PLATAFORMA DE PREPARACIÓN ACADÉMICA ===== */
+        #plataforma {
+            padding: 80px 0;
+        }
+        .plataforma-box {
+            max-width: 900px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #0a2647 0%, #1a3a6b 55%, #0a2647 100%);
+            border-radius: var(--radius-lg);
+            padding: 56px 40px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(232, 185, 49, 0.25);
+            transition: var(--transition);
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+        .plataforma-box::before {
+            content: '';
+            position: absolute;
+            top: -120px;
+            right: -120px;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(232, 185, 49, 0.22) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .plataforma-box::after {
+            content: '';
+            position: absolute;
+            bottom: -140px;
+            left: -120px;
+            width: 340px;
+            height: 340px;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.18) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .plataforma-box > * {
+            position: relative;
+            z-index: 1;
+        }
+        .plataforma-box:hover {
+            box-shadow: 0 32px 80px rgba(10, 38, 71, 0.35);
+            border-color: #e8b931;
+        }
+        .plataforma-box .icon-plataforma {
+            width: 92px;
+            height: 92px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.6rem;
+            color: #e8b931;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(232, 185, 49, 0.35);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(232, 185, 49, 0.15);
+            animation: pulseIcon 2.6s infinite ease-in-out;
+        }
+        .plataforma-box .section-title {
+            color: #fff;
+            margin-bottom: 14px;
+        }
+        .plataforma-box .section-title .highlight {
+            color: #e8b931;
+        }
+        .plataforma-box .section-subtitle {
+            color: rgba(255, 255, 255, 0.82);
+            margin-bottom: 28px;
+        }
+        .plataforma-features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 34px;
+        }
+        .plataforma-features .badge-feat {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #fff;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: var(--transition);
+        }
+        .plataforma-features .badge-feat:hover {
+            background: rgba(232, 185, 49, 0.15);
+            border-color: rgba(232, 185, 49, 0.5);
+            transform: translateY(-2px);
+        }
+        .plataforma-features .badge-feat i {
+            color: #e8b931;
+            font-size: 0.9rem;
+        }
+        .btn-plataforma {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #e8b931 0%, #f5d76e 100%);
+            color: #0a2647;
+            border: none;
+            padding: 18px 46px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(232, 185, 49, 0.35);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+        .btn-plataforma i {
+            font-size: 1.25rem;
+        }
+        .btn-plataforma:hover {
+            transform: translateY(-4px);
+            background: linear-gradient(135deg, #f5d76e 0%, #e8b931 100%);
+            box-shadow: 0 16px 42px rgba(232, 185, 49, 0.55);
+            color: #0a2647;
+        }
+
+        /* ===== CLASES VIRTUALES ===== */
         .clases-box {
             max-width: 900px;
             margin: 0 auto;
@@ -561,7 +729,7 @@
         }
         .clases-box:hover {
             box-shadow: var(--shadow-lg);
-            border-color: #0f9d58; /* Color verde de Google Meet */
+            border-color: #0f9d58;
         }
         .clases-box .section-subtitle {
             margin-bottom: 28px;
@@ -1065,7 +1233,7 @@
             border: none;
         }
 
-        /* ===== RESPONSIVE & BREAKPOINTS MÓVIL ===== */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .hero-content {
                 grid-template-columns: 1fr;
@@ -1086,6 +1254,12 @@
             .current-datetime {
                 justify-content: center;
             }
+        }
+
+        @media (max-width: 900px) {
+            .nav-menu { gap: 16px; }
+            .nav-menu a { font-size: 0.85rem; }
+            .nav-menu a.nav-plataforma { padding: 8px 16px; font-size: 0.8rem; }
         }
 
         @media (max-width: 768px) {
@@ -1122,6 +1296,33 @@
             .nav-menu a::after {
                 display: none;
             }
+
+            /* ====== BOTÓN PLATAFORMA CENTRADO EN MODO RESPONSIVE ====== */
+            .nav-menu .nav-item-plataforma {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin: 8px 0 4px;
+            }
+            .nav-menu a.nav-plataforma {
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                width: auto;
+                min-width: 240px;
+                max-width: 90%;
+                padding: 14px 26px;
+                font-size: 0.95rem;
+                text-align: center;
+                border-radius: 50px;
+                box-shadow: 0 6px 20px rgba(232, 185, 49, 0.4);
+            }
+            .nav-menu a.nav-plataforma i {
+                font-size: 1rem;
+            }
+
             .btn-wsp-header span {
                 display: none;
             }
@@ -1151,6 +1352,20 @@
             }
             .inscripcion-box, .prueba-box, .clases-box {
                 padding: 32px 24px;
+            }
+            .plataforma-box {
+                padding: 40px 24px;
+            }
+            .plataforma-box .icon-plataforma {
+                width: 78px;
+                height: 78px;
+                font-size: 2.1rem;
+            }
+            .btn-plataforma {
+                width: 100%;
+                max-width: 100%;
+                padding: 16px 24px;
+                font-size: 1rem;
             }
             .directora-wrapper {
                 grid-template-columns: 1fr;
@@ -1194,6 +1409,15 @@
                 width: 100%;
                 justify-content: center;
             }
+            .nav-menu a.nav-plataforma {
+                min-width: 200px;
+                padding: 13px 20px;
+                font-size: 0.9rem;
+            }
+            .plataforma-features .badge-feat {
+                font-size: 0.78rem;
+                padding: 7px 14px;
+            }
         }
     </style>
 </head>
@@ -1224,6 +1448,12 @@
                 <li><a href="#universidades">Universidades</a></li>
                 <li><a href="#directora">Director</a></li>
                 <li><a href="#contacto">Contacto</a></li>
+                <!-- BOTÓN PLATAFORMA (se centra en móvil) -->
+                <li class="nav-item-plataforma">
+                    <a href="https://cetapreuniversitario.github.io/simuladores-ceta.html" target="_blank" rel="noopener" class="nav-plataforma">
+                        <i class="fas fa-graduation-cap"></i> Plataforma
+                    </a>
+                </li>
             </ul>
             <div class="nav-actions">
                 <a href="https://wa.me/+593988468474?text=Hola%2C%20deseo%20informaci%C3%B3n%20sobre%20el%20preuniversitario" class="btn-wsp-header" target="_blank">
@@ -1319,7 +1549,31 @@
         </div>
     </section>
 
-    <!-- NUEVA SECCIÓN DE CLASES VIRTUALES (CON TABLA) -->
+    <!-- ============ NUEVA SECCIÓN: PLATAFORMA DE PREPARACIÓN ACADÉMICA ============ -->
+    <section id="plataforma">
+        <div class="container">
+            <div class="plataforma-box">
+                <div class="icon-plataforma">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2 class="section-title">Plataforma de <span class="highlight">Preparación Académica</span></h2>
+                <p class="section-subtitle">
+                    Accede a tu aula virtual integral: material de estudio actualizado, simuladores interactivos, evaluaciones de progreso, videoclases y tutorías personalizadas. Todo en un solo lugar, disponible 24/7.
+                </p>
+                <div class="plataforma-features">
+                    <span class="badge-feat"><i class="fas fa-book"></i> Material Actualizado</span>
+                    <span class="badge-feat"><i class="fas fa-laptop"></i> Simuladores Interactivos</span>
+                    <span class="badge-feat"><i class="fas fa-chart-line"></i> Progreso Personalizado</span>
+                    <span class="badge-feat"><i class="fas fa-video"></i> Videoclases On-Demand</span>
+                </div>
+                <a href="https://cetapreuniversitario.github.io/simuladores-ceta.html" target="_blank" rel="noopener" class="btn-plataforma">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar a la Plataforma
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE CLASES VIRTUALES (CON TABLA) -->
     <section id="clases">
         <div class="container">
             <div class="clases-box">
@@ -1350,7 +1604,6 @@
                                     </a>
                                 </td>
                             </tr>
-                           
                         </tbody>
                     </table>
                 </div>
@@ -1756,7 +2009,7 @@
                     });
                 }
 
-                // Scroll reveal funcional
+                // Scroll reveal
                 const revealSections = document.querySelectorAll('section');
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
