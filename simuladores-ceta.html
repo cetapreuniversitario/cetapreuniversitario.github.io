@@ -7,15 +7,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
+    /* ==========================================
+       VARIABLES Y TEMA OSCURO PREDETERMINADO
+       ========================================== */
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --sidebar-bg: #0f172a;
-      --sidebar-text: #94a3b8;
-      --bg-main: #f8fafc;
-      --card-bg: #ffffff;
-      --text-dark: #1e293b;
-      --border: #e2e8f0;
+      --bg-main: #020617;
+      --card-bg: #0f172a;
+      --card-border: #1e293b;
+      --sidebar-bg: #0a1220;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #020617;
+      --border: #334155;
+      
       --accent-math: #3b82f6;
       --accent-chem: #10b981;
       --accent-verbal: #f59e0b;
@@ -24,70 +30,49 @@
       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    body.dark {
-      --bg-main: #020617;
-      --card-bg: #1e293b;
-      --text-dark: #f1f5f9;
-      --border: #334155;
-    }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: var(--bg-main);
-      color: var(--text-dark);
+      color: var(--text-main);
       overflow-x: hidden;
       user-select: none;
+      min-height: 100vh;
     }
 
-    /* --- LOGIN ACADÉMICO --- */
+    /* ==========================================
+       PANTALLA DE LOGIN ACADÉMICO
+       ========================================== */
     #login-screen {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #090d16 100%);
+      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 60%, #020617 100%);
       padding: 20px;
       position: relative;
     }
 
-    #login-screen::before {
-      content: "";
-      position: absolute;
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, rgba(0,0,0,0) 70%);
-      border-radius: 50%;
-      top: 10%;
-      left: 15%;
-      pointer-events: none;
-    }
-
     .login-card {
-      background: rgba(255, 255, 255, 0.98);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(16px);
       padding: 2.5rem 2rem;
       border-radius: 28px;
       width: 100%;
       max-width: 420px;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border);
       z-index: 2;
-    }
-
-    body.dark .login-card {
-      background: rgba(30, 41, 59, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .brand-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #eff6ff;
-      color: #2563eb;
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
       padding: 6px 14px;
       border-radius: 20px;
       font-size: 0.75rem;
@@ -95,6 +80,7 @@
       letter-spacing: 0.5px;
       margin-bottom: 1rem;
       text-transform: uppercase;
+      border: 1px solid rgba(37, 99, 235, 0.3);
     }
 
     .logo-circle {
@@ -110,47 +96,41 @@
       box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
     }
 
-    .login-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.25rem; color: #0f172a; }
-    body.dark .login-card h2 { color: #f8fafc; }
-
-    .login-card p { color: #64748b; margin-bottom: 1.5rem; font-size: 0.88rem; }
+    .login-card h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.25rem; color: var(--text-main); }
+    .login-card p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.88rem; }
 
     .input-group { text-align: left; margin-bottom: 1rem; }
 
     .input-label {
       font-size: 0.78rem;
       font-weight: 700;
-      color: #64748b;
+      color: var(--text-muted);
       margin-bottom: 6px;
       display: block;
       text-transform: uppercase;
     }
 
-    /* INPUTS EN NEGRO Y TEXTO BLANCO */
     .input-field {
       width: 100%;
       padding: 13px 16px;
-      border: 2px solid #334155;
+      border: 2px solid var(--border);
       border-radius: 12px;
       font-size: 0.95rem;
       transition: var(--transition);
-      background-color: #0f172a !important;
-      color: #f8fafc !important;
+      background-color: var(--input-bg) !important;
+      color: var(--text-main) !important;
     }
 
-    .input-field::placeholder {
-      color: #64748b !important;
-    }
+    .input-field::placeholder { color: #64748b !important; }
 
     .input-field:focus { 
       border-color: var(--primary); 
       outline: none; 
-      background-color: #020617 !important; 
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
     }
 
     .security-box {
-      background: #0f172a;
+      background: #090d16;
       border: 1px dashed var(--primary);
       border-radius: 14px;
       padding: 12px;
@@ -169,7 +149,7 @@
       background: #1e293b;
       padding: 6px 12px;
       border-radius: 8px;
-      border: 1px solid #334155;
+      border: 1px solid var(--border);
     }
 
     .btn-primary {
@@ -187,12 +167,14 @@
       justify-content: center;
       gap: 8px;
       font-size: 0.95rem;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
     }
 
     .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
-    /* --- DASHBOARD Y LAYOUT --- */
+    /* ==========================================
+       DASHBOARD Y LAYOUT
+       ========================================== */
     #main-dashboard { display: none; }
 
     .layout-wrapper { display: flex; min-height: 100vh; }
@@ -207,6 +189,7 @@
       position: fixed;
       height: 100vh;
       z-index: 1000;
+      border-right: 1px solid var(--border);
       transition: var(--transition);
     }
 
@@ -215,8 +198,9 @@
       align-items: center;
       gap: 12px;
       font-weight: 800;
-      font-size: 1.2rem;
-      margin-bottom: 3rem;
+      font-size: 1.15rem;
+      margin-bottom: 2.5rem;
+      color: #60a5fa;
     }
 
     .nav-menu { flex-grow: 1; list-style: none; }
@@ -227,21 +211,23 @@
       align-items: center;
       gap: 12px;
       padding: 12px 16px;
-      color: var(--sidebar-text);
+      color: var(--text-muted);
       text-decoration: none;
       border-radius: 12px;
       transition: var(--transition);
       cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
     }
 
     .nav-link:hover, .nav-link.active {
-      background: rgba(255,255,255,0.1);
-      color: white;
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
     }
 
     .sidebar-footer {
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
     }
 
     .main-content {
@@ -258,10 +244,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
     }
 
-    .hamburger { display: none; cursor: pointer; color: var(--text-dark); }
+    .hamburger { display: none; cursor: pointer; color: var(--text-main); }
 
     .grid-courses {
       display: grid;
@@ -280,10 +266,10 @@
       overflow: hidden;
     }
 
-    .course-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05); }
+    .course-card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px -6px rgba(0,0,0,0.5); }
 
     .course-card.locked {
-      opacity: 0.6;
+      opacity: 0.5;
       filter: grayscale(0.8);
       pointer-events: none;
       user-select: none;
@@ -322,22 +308,25 @@
       background: var(--bg-main);
       border-radius: 10px;
       text-decoration: none;
-      color: var(--text-dark);
+      color: var(--text-main);
       font-size: 0.85rem;
       font-weight: 600;
       margin-top: 10px;
+      border: 1px solid var(--border);
       transition: 0.2s;
     }
 
-    .sim-link:hover { background: var(--primary); color: white; }
+    .sim-link:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* MODAL HORARIOS */
+    /* ==========================================
+       MODAL HORARIOS
+       ========================================== */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(4px);
+      background: rgba(2, 6, 23, 0.8);
+      backdrop-filter: blur(6px);
       z-index: 2000;
       align-items: center;
       justify-content: center;
@@ -353,7 +342,7 @@
       max-width: 460px;
       padding: 2rem;
       border: 1px solid var(--border);
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
       position: relative;
     }
 
@@ -361,14 +350,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
     .modal-title {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
     }
 
@@ -376,13 +365,16 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      color: var(--sidebar-text);
+      color: var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 8px;
       padding: 4px;
+      transition: var(--transition);
     }
+
+    .btn-close:hover { color: var(--text-main); background: var(--border); }
 
     .schedule-box {
       background: var(--bg-main);
@@ -407,19 +399,24 @@
       flex-shrink: 0;
     }
 
+    /* ==========================================
+       RESPONSIVE DESIGN (MENÚ MÓVIL)
+       ========================================== */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(2px);
+      z-index: 999;
+    }
+    .overlay.active { display: block; }
+
     @media (max-width: 1024px) {
       .sidebar { left: -280px; }
       .sidebar.active { left: 0; }
-      .main-content { margin-left: 0; }
+      .main-content { margin-left: 0; padding: 1.5rem; }
       .hamburger { display: block; }
-      .overlay {
-        display: none;
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 999;
-      }
-      .overlay.active { display: block; }
     }
 
     .error-msg { 
@@ -427,7 +424,8 @@
       font-size: 0.82rem; 
       margin-bottom: 1rem; 
       display: none; 
-      background: #fee2e2;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
       padding: 10px;
       border-radius: 8px;
       text-align: left;
@@ -439,7 +437,7 @@
 
   <div class="overlay" id="overlay"></div>
 
-  <!-- Pantalla de Login -->
+  <!-- Pantalla de Login Académico -->
   <div id="login-screen">
     <div class="login-card">
       <div class="brand-badge"><i data-lucide="shield-check" size="14"></i> Campus Virtual</div>
@@ -449,7 +447,7 @@
       
       <div id="login-error" class="error-msg"></div>
 
-      <!-- Campo de Código de Acceso Estudiantil -->
+      <!-- Campo de Código del Estudiante -->
       <div class="input-group">
         <label class="input-label">Código de Acceso Estudiantil</label>
         <input type="text" id="accessCode" class="input-field" placeholder="Ej: Estudiante1-CETA" onkeypress="checkEnter(event)">
@@ -476,16 +474,13 @@
 
         <nav class="nav-menu">
           <li class="nav-item">
-            <a href="#" class="nav-link active"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+            <a href="#" class="nav-link active" onclick="closeSidebarMobile()"><i data-lucide="layout-dashboard"></i> Dashboard</a>
           </li> 
           <li class="nav-item">
-            <a href="videoclass.html" class="nav-link"><i data-lucide="video"></i> Clases Grabadas</a>
+            <a href="videoclass.html" class="nav-link" onclick="closeSidebarMobile()"><i data-lucide="video"></i> Clases Grabadas</a>
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link" id="schedule-toggle"><i data-lucide="calendar"></i> Horarios Presenciales</a>
-          </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link" id="dark-toggle"><i data-lucide="moon"></i> Modo Oscuro</a>
           </li>
         </nav>
 
@@ -500,14 +495,14 @@
         <header>
           <div class="hamburger" id="ham-menu"><i data-lucide="menu" size="32"></i></div>
           <div>
-            <h1 id="user-display-name">Bienvenido</h1>
-            <p style="color: var(--sidebar-text)">¿Qué planeas estudiar hoy?</p>
+            <h1 id="user-display-name" style="font-size: 1.5rem; font-weight: 800;">Bienvenido</h1>
+            <p style="color: var(--text-muted); font-size: 0.88rem;">¿Qué planeas estudiar hoy?</p>
           </div>
           <div class="user-pill" style="background: var(--card-bg); padding: 8px 16px; border-radius: 50px; border: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
             <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
               <i data-lucide="user" size="18"></i>
             </div>
-            <span style="font-weight: 600; font-size: 0.9rem;">Estudiante Activo</span>
+            <span style="font-weight: 600; font-size: 0.88rem;">Estudiante Activo</span>
           </div>
         </header>
 
@@ -516,7 +511,7 @@
           <div class="course-card" id="card-matematicas">
             <div class="course-badge" style="background: var(--accent-math);"><i data-lucide="calculator"></i></div>
             <h3>Matemáticas</h3>
-            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Álgebra, Geometría y Cálculo.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Álgebra, Geometría y Cálculo.</p>
             <a href="simulador-matemático.html" class="sim-link">Simulador Mate 1 <i data-lucide="chevron-right" size="14"></i></a>
             <a href="simulador-mate2.html" class="sim-link">Simulador Mate 2 <i data-lucide="chevron-right" size="14"></i></a>
             <a href="simulador-mate3.html" class="sim-link">Simulador Mate 3 <i data-lucide="chevron-right" size="14"></i></a>
@@ -526,7 +521,7 @@
           <div class="course-card" id="card-quimica">
             <div class="course-badge" style="background: var(--accent-chem);"><i data-lucide="flask-conical"></i></div>
             <h3>Química</h3>
-            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Química Orgánica e Inorgánica.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Química Orgánica e Inorgánica.</p>
             <a href="simulador_quimica.html" class="sim-link">Simulador de Química 1<i data-lucide="chevron-right" size="14"></i></a>
             <a href="simulador_quimica2.html" class="sim-link">Simulador de Química 2<i data-lucide="chevron-right" size="14"></i></a>
             <a href="simulador_quimica3.html" class="sim-link">Simulador de Química 3<i data-lucide="chevron-right" size="14"></i></a>
@@ -536,7 +531,7 @@
           <div class="course-card" id="card-verbal">
             <div class="course-badge" style="background: var(--accent-verbal);"><i data-lucide="languages"></i></div>
             <h3>R. Verbal</h3>
-            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Comprensión y Analogías.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Comprensión y Analogías.</p>
             <a href="simulador-razonamiento-verbal.html" class="sim-link">Simulador Verbal 1<i data-lucide="chevron-right" size="14"></i></a>
             <a href="simulador_r_verbal2.html" class="sim-link">Simulador Verbal 2<i data-lucide="chevron-right" size="14"></i></a>
             <a href="simulador_r_verbal3.html" class="sim-link">Simulador Verbal 3<i data-lucide="chevron-right" size="14"></i></a>
@@ -546,7 +541,7 @@
           <div class="course-card" id="card-abstracto">
             <div class="course-badge" style="background: var(--accent-abstract);"><i data-lucide="layers"></i></div>
             <h3>R. Abstracto</h3>
-            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Series y Matrices espaciales.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Series y Matrices espaciales.</p>
             <a href="#" class="sim-link">Secuencias Lógicas <i data-lucide="chevron-right" size="14"></i></a>
             <a href="#" class="sim-link">Matrices Espaciales <i data-lucide="chevron-right" size="14"></i></a>
           </div>
@@ -555,7 +550,7 @@
           <div class="course-card" id="card-examen">
             <div class="course-badge" style="background: var(--accent-exam);"><i data-lucide="file-text"></i></div>
             <h3>Examen General</h3>
-            <p style="font-size: 0.8rem; color: var(--sidebar-text); margin-bottom: 1rem;">Simulacros integrales cronometrados.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Simulacros integrales cronometrados.</p>
             <a href="#" class="sim-link">Examen Piloto 1 <i data-lucide="chevron-right" size="14"></i></a>
             <a href="#" class="sim-link">Examen Piloto 2 <i data-lucide="chevron-right" size="14"></i></a>
             <a href="#" class="sim-link">Simulacro Final <i data-lucide="chevron-right" size="14"></i></a>
@@ -575,16 +570,16 @@
         </div>
         <button class="btn-close" id="close-modal"><i data-lucide="x" size="20"></i></button>
       </div>
-      <p style="font-size: 0.9rem; color: var(--sidebar-text);">Consulta las jornadas presenciales programadas en CETA Preuniversitario.</p>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">Consulta las jornadas presenciales programadas en CETA Preuniversitario.</p>
       
       <div class="schedule-box">
         <div class="schedule-icon">
           <i data-lucide="clock" size="24"></i>
         </div>
         <div>
-          <h4 style="font-size: 1rem; margin-bottom: 4px;">Jornada Presencial Sabatina</h4>
-          <p style="font-size: 0.85rem; color: var(--primary); font-weight: 700;">Cada Sábado</p>
-          <p style="font-size: 0.85rem; color: var(--sidebar-text);">11:00 AM - 15:30 PM (3:30 PM)</p>
+          <h4 style="font-size: 0.95rem; margin-bottom: 4px;">Jornada Presencial Sabatina</h4>
+          <p style="font-size: 0.85rem; color: #60a5fa; font-weight: 700;">Cada Sábado</p>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">11:00 AM - 15:30 PM (3:30 PM)</p>
         </div>
       </div>
     </div>
@@ -595,7 +590,7 @@
   <script src="estudiantes-db.js"></script>
   <script src="footer-ceta.js"></script>
 
-  <!-- CONTROL DE INTERFAZ DEL DASHBOARD Y LOGIN -->
+  <!-- CONTROL DE INTERFAZ Y NAVEGACIÓN -->
   <script>
     async function handleLogin() {
       const codeInput = document.getElementById('accessCode');
@@ -656,38 +651,33 @@
       if(e.key === 'Enter') handleLogin(); 
     } 
 
+    // Elementos Menú y Responsividad
     const hamMenu = document.getElementById('ham-menu');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    const darkToggle = document.getElementById('dark-toggle');
     const scheduleToggle = document.getElementById('schedule-toggle');
     const scheduleModal = document.getElementById('schedule-modal');
     const closeModal = document.getElementById('close-modal');
 
+    function closeSidebarMobile() {
+      if (window.innerWidth <= 1024) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      }
+    }
+
     hamMenu.onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); }
-    overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
+    overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); scheduleModal.classList.remove('active'); }
 
     scheduleToggle.onclick = (e) => {
       e.preventDefault();
       scheduleModal.classList.add('active');
       lucide.createIcons();
-      if(window.innerWidth <= 1024) {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
-      }
+      closeSidebarMobile();
     };
 
     closeModal.onclick = () => { scheduleModal.classList.remove('active'); };
     scheduleModal.onclick = (e) => { if (e.target === scheduleModal) scheduleModal.classList.remove('active'); };
-
-    darkToggle.onclick = (e) => {
-      e.preventDefault();
-      document.body.classList.toggle('dark');
-      const isDark = document.body.classList.contains('dark');
-      localStorage.setItem('ceta_dark', isDark);
-      darkToggle.innerHTML = isDark ? '<i data-lucide="sun"></i> Modo Claro' : '<i data-lucide="moon"></i> Modo Oscuro';
-      lucide.createIcons();
-    };
 
     window.onload = () => {
       if (typeof CETA_Seguridad_DetectarDispositivo === 'function') {
@@ -695,11 +685,6 @@
       }
 
       lucide.createIcons();
-      if(localStorage.getItem('ceta_dark') === 'true') {
-        document.body.classList.add('dark');
-        darkToggle.innerHTML = '<i data-lucide="sun"></i> Modo Claro';
-        lucide.createIcons();
-      }
 
       const session = localStorage.getItem('ceta_session');
       if(session) {
