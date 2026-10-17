@@ -23,9 +23,9 @@
             --color-secondary: #e8b931;
             --color-secondary-light: #f5d76e;
             --color-accent: #3498db;
-            --color-bg: #07111e;                /* Fondo general oscuro por defecto */
-            --color-section-bg: #07111e;        /* Fondo unificado de todas las secciones */
-            --color-surface: #0f223a;           /* Superficie de tarjetas y cajas */
+            --color-bg: #07111e;
+            --color-section-bg: #07111e;
+            --color-surface: #0f223a;
             --color-text: #f4f7fc;
             --color-text-muted: #a0aec0;
             --color-border: #1a3a6b;
@@ -39,7 +39,6 @@
             --font-serif: 'Playfair Display', serif;
         }
 
-        /* Ya no hay modo claro, todo es oscuro por defecto */
         body {
             font-family: var(--font-sans);
             background-color: var(--color-bg);
@@ -49,7 +48,6 @@
             transition: background-color 0.45s ease, color 0.45s ease;
         }
 
-        /* Encabezado oscuro */
         header {
             background: rgba(15, 34, 58, 0.94);
             border-bottom: 1px solid var(--color-secondary);
@@ -483,12 +481,10 @@
             transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.45s ease;
         }
 
-        /* Fondo unificado para todas las secciones después del banner */
         section:not(.hero) {
             background-color: var(--color-section-bg);
         }
 
-        /* Tarjetas y cajas con superficie oscura */
         .curso-card,
         .prueba-box,
         .clases-box,
@@ -808,26 +804,22 @@
             color: var(--color-text);
             vertical-align: middle;
         }
-        .btn-meet-small {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #0f9d58;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
+
+        /* ESTILOS ESPECÍFICOS PARA EL HORARIO SABATINO INTEGRADOR */
+        .schedule-badge-day {
+            display: inline-block;
+            background: rgba(232, 185, 49, 0.15);
+            color: #e8b931;
+            padding: 4px 12px;
             border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            white-space: nowrap;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 1px solid rgba(232, 185, 49, 0.3);
         }
-        .btn-meet-small:hover {
-            background: #0b8043;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(15, 157, 88, 0.25);
+
+        .schedule-time-highlight {
+            color: #3498db;
+            font-weight: 700;
         }
 
         /* ===== INSCRIPCIÓN ===== */
@@ -1445,10 +1437,6 @@
             .logo span {
                 font-size: 1rem;
             }
-            .btn-meet-small {
-                width: 100%;
-                justify-content: center;
-            }
             .nav-menu a.nav-plataforma {
                 min-width: 200px;
                 padding: 13px 20px;
@@ -1470,7 +1458,7 @@
         }
     </style>
 </head>
-<body class="dark-mode"> <!-- Modo oscuro activado por defecto -->
+<body class="dark-mode">
 
     <!-- ===== LOADER ===== -->
     <div class="loader" id="loader">
@@ -1621,34 +1609,35 @@
         </div>
     </section>
 
+    <!-- ===== AULA VIRTUAL (ACTUALIZADA CON HORARIOS DE SIMULADORES-CETA.HTML) ===== -->
     <section id="clases">
         <div class="container">
             <div class="clases-box">
-                <div class="icon-meet"><i class="fas fa-video"></i></div>
+                <div class="icon-meet"><i class="fas fa-calendar-alt"></i></div>
                 <h2 class="section-title">Aula <span class="highlight">Virtual</span></h2>
                 <p class="section-subtitle">
-                    Conéctate a tus sesiones en vivo a través de Google Meet. Revisa tu horario y accede directamente a tu sala virtual.
+                    Consulta las jornadas presenciales programadas en CETA Preuniversitario y mantén el seguimiento de tu preparación.
                 </p>
 
                 <div class="clases-table-container">
                     <table class="clases-table">
                         <thead>
                             <tr>
-                                <th>Asignatura</th>
-                                <th>Docente</th>
-                                <th>Día y Hora</th>
-                                <th>Conexión en Vivo</th>
+                                <th>Modalidad y Jornada</th>
+                                <th>Días Programados</th>
+                                <th>Horario Académico</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Próximamente</td>
-                                <td>Próximamente</td>
-                                <td>Próximamente</td>
+                                <td><strong>Jornada Presencial Sabatina</strong></td>
+                                <td><span class="schedule-badge-day">Cada Sábado</span></td>
+                                <td><span class="schedule-time-highlight"><i class="fas fa-clock"></i> 11:00 AM – 15:30 PM (3:30 PM)</span></td>
                                 <td>
-                                    <a href="#" target="_blank" class="btn-meet-small">
-                                        <i class="fas fa-video"></i> Entrar a clase
-                                    </a>
+                                    <span style="color: #10b981; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                                        <i class="fas fa-check-circle"></i> Activo
+                                    </span>
                                 </td>
                             </tr>
                         </tbody>
@@ -1814,7 +1803,7 @@
         </div>
     </footer>
 
-    <!-- Solo queda el botón flotante de WhatsApp -->
+    <!-- Botón flotante de WhatsApp -->
     <div class="floating-actions-left">
         <a href="https://wa.me/+593988468474?text=Hola%2C%20deseo%20informaci%C3%B3n%20sobre%20el%20preuniversitario%20y%20simuladores" class="btn-float whatsapp-float" target="_blank" aria-label="WhatsApp">
             <i class="fab fa-whatsapp"></i>
