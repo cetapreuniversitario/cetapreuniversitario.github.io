@@ -3,10 +3,12 @@
 // activo: 1 = Permitido | 0 = Deshabilitado
 // ==========================================
 const ESTUDIANTES_DB = [
-  { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
-  { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 },
   { codigo: "admin", nombre: "Administrador", activo: 1 },
-  { codigo: "Estudiante3-CETA", nombre: "Marcos Torres", activo: 0 }
+  { codigo: "docente", nombre: "Docente", activo: 1 },
+  { codigo: "NoreliCETA", nombre: "Norelia Mercedes Barberan Cusme", activo: 1 },
+  { codigo: "MelinaCETA", nombre: "Melina Mercedes Cusme Rivas", activo: 1 },
+  { codigo: "ByronCETA", nombre: "Byron Serrano", activo: 1 },
+  { codigo: "AnrhonyCETA", nombre: "Anrhony Maubricio Barberan Cusme", activo: 1 }
 ];
 
 // Generar estudiantes dinámicos del 4 al 25
