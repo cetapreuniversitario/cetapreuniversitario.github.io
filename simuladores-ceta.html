@@ -8,19 +8,19 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     /* ==========================================
-       VARIABLES Y TEMA OSCURO PREDETERMINADO
+       COLORIMETRÍA OSCURA ELEGANTE (NO NEGRO AZABACHE)
        ========================================== */
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --bg-main: #020617;
-      --card-bg: #0f172a;
-      --card-border: #1e293b;
-      --sidebar-bg: #0a1220;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --input-bg: #020617;
-      --border: #334155;
+      --bg-main: #111827;       /* Azul Grisáceo Oscuro */
+      --card-bg: #1f2937;       /* Gris Oscuro Slate */
+      --card-border: #374151;   /* Borde Gris Suave */
+      --sidebar-bg: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --input-bg: #111827;
+      --border: #374151;
       
       --accent-math: #3b82f6;
       --accent-chem: #10b981;
@@ -41,30 +41,25 @@
       min-height: 100vh;
     }
 
-    /* ==========================================
-       PANTALLA DE LOGIN ACADÉMICO
-       ========================================== */
+    /* --- LOGIN ACADÉMICO --- */
     #login-screen {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #1e293b 0%, #0f172a 60%, #020617 100%);
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
       padding: 20px;
-      position: relative;
     }
 
     .login-card {
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(16px);
+      background: var(--card-bg);
       padding: 2.5rem 2rem;
       border-radius: 28px;
       width: 100%;
       max-width: 420px;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
       border: 1px solid var(--border);
-      z-index: 2;
     }
 
     .brand-badge {
@@ -121,7 +116,7 @@
       color: var(--text-main) !important;
     }
 
-    .input-field::placeholder { color: #64748b !important; }
+    .input-field::placeholder { color: #6b7280 !important; }
 
     .input-field:focus { 
       border-color: var(--primary); 
@@ -130,7 +125,7 @@
     }
 
     .security-box {
-      background: #090d16;
+      background: var(--input-bg);
       border: 1px dashed var(--primary);
       border-radius: 14px;
       padding: 12px;
@@ -146,7 +141,7 @@
       font-weight: 800;
       letter-spacing: 4px;
       color: #60a5fa;
-      background: #1e293b;
+      background: #374151;
       padding: 6px 12px;
       border-radius: 8px;
       border: 1px solid var(--border);
@@ -172,9 +167,7 @@
 
     .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
-    /* ==========================================
-       DASHBOARD Y LAYOUT
-       ========================================== */
+    /* --- DASHBOARD Y LAYOUT --- */
     #main-dashboard { display: none; }
 
     .layout-wrapper { display: flex; min-height: 100vh; }
@@ -266,7 +259,7 @@
       overflow: hidden;
     }
 
-    .course-card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px -6px rgba(0,0,0,0.5); }
+    .course-card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px -6px rgba(0,0,0,0.4); }
 
     .course-card.locked {
       opacity: 0.5;
@@ -318,14 +311,12 @@
 
     .sim-link:hover { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* ==========================================
-       MODAL HORARIOS
-       ========================================== */
+    /* MODALES ESTILIZADOS */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(2, 6, 23, 0.8);
+      background: rgba(17, 24, 39, 0.85);
       backdrop-filter: blur(6px);
       z-index: 2000;
       align-items: center;
@@ -371,10 +362,7 @@
       justify-content: center;
       border-radius: 8px;
       padding: 4px;
-      transition: var(--transition);
     }
-
-    .btn-close:hover { color: var(--text-main); background: var(--border); }
 
     .schedule-box {
       background: var(--bg-main);
@@ -399,9 +387,7 @@
       flex-shrink: 0;
     }
 
-    /* ==========================================
-       RESPONSIVE DESIGN (MENÚ MÓVIL)
-       ========================================== */
+    /* MENÚ MÓVIL Y RESPONSIVO */
     .overlay {
       display: none;
       position: fixed;
@@ -437,7 +423,7 @@
 
   <div class="overlay" id="overlay"></div>
 
-  <!-- Pantalla de Login Académico -->
+  <!-- Login -->
   <div id="login-screen">
     <div class="login-card">
       <div class="brand-badge"><i data-lucide="shield-check" size="14"></i> Campus Virtual</div>
@@ -447,13 +433,11 @@
       
       <div id="login-error" class="error-msg"></div>
 
-      <!-- Campo de Código del Estudiante -->
       <div class="input-group">
         <label class="input-label">Código de Acceso Estudiantil</label>
         <input type="text" id="accessCode" class="input-field" placeholder="Ej: Estudiante1-CETA" onkeypress="checkEnter(event)">
       </div>
 
-      <!-- Contenedor dinámico de Seguridad manejado por estudiantes-db.js -->
       <div id="security-verification-container"></div>
 
       <button class="btn-primary" onclick="handleLogin()">
@@ -463,7 +447,7 @@
     </div>
   </div>
 
-  <!-- Dashboard Principal -->
+  <!-- Dashboard -->
   <div id="main-dashboard">
     <div class="layout-wrapper">
       <aside class="sidebar" id="sidebar">
@@ -481,6 +465,12 @@
           </li>
           <li class="nav-item">
             <a href="#" class="nav-link" id="schedule-toggle"><i data-lucide="calendar"></i> Horarios Presenciales</a>
+          </li>
+          <!-- CIERRE DE SESIÓN EN MENÚ RESPONSIVE/MÓVIL -->
+          <li class="nav-item" style="margin-top: 1rem;">
+            <a href="#" onclick="handleLogout()" class="nav-link" style="color: #ef4444; background: rgba(239, 68, 68, 0.1);">
+              <i data-lucide="log-out"></i> Cerrar Sesión
+            </a>
           </li>
         </nav>
 
@@ -507,7 +497,6 @@
         </header>
 
         <div class="grid-courses">
-          <!-- Matemáticas -->
           <div class="course-card" id="card-matematicas">
             <div class="course-badge" style="background: var(--accent-math);"><i data-lucide="calculator"></i></div>
             <h3>Matemáticas</h3>
@@ -517,7 +506,6 @@
             <a href="simulador-mate3.html" class="sim-link">Simulador Mate 3 <i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
-          <!-- Química -->
           <div class="course-card" id="card-quimica">
             <div class="course-badge" style="background: var(--accent-chem);"><i data-lucide="flask-conical"></i></div>
             <h3>Química</h3>
@@ -527,7 +515,6 @@
             <a href="simulador_quimica3.html" class="sim-link">Simulador de Química 3<i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
-          <!-- Razonamiento Verbal -->
           <div class="course-card" id="card-verbal">
             <div class="course-badge" style="background: var(--accent-verbal);"><i data-lucide="languages"></i></div>
             <h3>R. Verbal</h3>
@@ -537,7 +524,6 @@
             <a href="simulador_r_verbal3.html" class="sim-link">Simulador Verbal 3<i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
-          <!-- Razonamiento Abstracto -->
           <div class="course-card" id="card-abstracto">
             <div class="course-badge" style="background: var(--accent-abstract);"><i data-lucide="layers"></i></div>
             <h3>R. Abstracto</h3>
@@ -546,7 +532,6 @@
             <a href="#" class="sim-link">Matrices Espaciales <i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
-          <!-- Examen General -->
           <div class="course-card" id="card-examen">
             <div class="course-badge" style="background: var(--accent-exam);"><i data-lucide="file-text"></i></div>
             <h3>Examen General</h3>
@@ -585,13 +570,63 @@
     </div>
   </div>
 
-  <!-- VINCULACIÓN DE ARCHIVOS JS EXTERNOS -->
+  <!-- MODAL TEMPORIZADOR DE INACTIVIDAD / EXPIRACIÓN -->
+  <div class="modal" id="timeout-modal">
+    <div class="modal-card" style="text-align: center;">
+      <div style="width:64px; height:64px; background:rgba(245,158,11,0.15); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; color:#f59e0b;">
+        <i data-lucide="alert-triangle" size="32"></i>
+      </div>
+      <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.5rem;">¿Deseas mantener tu sesión activa?</h3>
+      <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1.5rem;">Has estado inactivo. Para proteger tu cuenta, la sesión se cerrará automáticamente si no confirmas tu presencia.</p>
+      
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <button onclick="handleLogout()" style="flex:1; padding:12px; background:transparent; border:1px solid var(--border); color:#ef4444; border-radius:12px; font-weight:700; cursor:pointer;">
+          Cerrar Sesión
+        </button>
+        <button onclick="extendSessionTime()" style="flex:1; padding:12px; background:var(--primary); border:none; color:white; border-radius:12px; font-weight:700; cursor:pointer;">
+          Quedarme
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS REQUERIDOS -->
   <script src="config-secciones.js"></script>
   <script src="estudiantes-db.js"></script>
   <script src="footer-ceta.js"></script>
 
-  <!-- CONTROL DE INTERFAZ Y NAVEGACIÓN -->
+  <!-- LÓGICA DE CONTROL Y TEMPORIZADOR INVISIBLE -->
   <script>
+    let primaryTimer = null;
+    let extensionTimer = null;
+    const TEN_MINUTES = 10 * 60 * 1000;
+    const FIVE_MINUTES = 5 * 60 * 1000;
+
+    // Iniciar temporizador invisible de 10 minutos
+    function startInvisibleTimer() {
+      clearTimeout(primaryTimer);
+      clearTimeout(extensionTimer);
+      primaryTimer = setTimeout(() => {
+        showTimeoutModal();
+      }, TEN_MINUTES);
+    }
+
+    function showTimeoutModal() {
+      document.getElementById('timeout-modal').classList.add('active');
+      lucide.createIcons();
+    }
+
+    // Si hace clic en "Quedarme", se otorgan 5 minutos adicionales y luego se cierra la sesión automáticamente
+    function extendSessionTime() {
+      document.getElementById('timeout-modal').classList.remove('active');
+      clearTimeout(primaryTimer);
+      clearTimeout(extensionTimer);
+      
+      extensionTimer = setTimeout(() => {
+        handleLogout();
+      }, FIVE_MINUTES);
+    }
+
     async function handleLogin() {
       const codeInput = document.getElementById('accessCode');
       const code = codeInput.value.trim();
@@ -639,10 +674,13 @@
       document.getElementById('main-dashboard').style.display = 'block';
       document.getElementById('user-display-name').textContent = `Hola, ${name.split(' ')[0]}`;
       aplicarConfiguracionSecciones();
+      startInvisibleTimer();
       lucide.createIcons();
     }
 
     function handleLogout() {
+      clearTimeout(primaryTimer);
+      clearTimeout(extensionTimer);
       localStorage.removeItem('ceta_session');
       location.reload();
     }
@@ -651,7 +689,6 @@
       if(e.key === 'Enter') handleLogin(); 
     } 
 
-    // Elementos Menú y Responsividad
     const hamMenu = document.getElementById('ham-menu');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
@@ -667,7 +704,11 @@
     }
 
     hamMenu.onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); }
-    overlay.onclick = () => { sidebar.classList.remove('active'); overlay.classList.remove('active'); scheduleModal.classList.remove('active'); }
+    overlay.onclick = () => { 
+      sidebar.classList.remove('active'); 
+      overlay.classList.remove('active'); 
+      scheduleModal.classList.remove('active'); 
+    }
 
     scheduleToggle.onclick = (e) => {
       e.preventDefault();
@@ -677,7 +718,6 @@
     };
 
     closeModal.onclick = () => { scheduleModal.classList.remove('active'); };
-    scheduleModal.onclick = (e) => { if (e.target === scheduleModal) scheduleModal.classList.remove('active'); };
 
     window.onload = () => {
       if (typeof CETA_Seguridad_DetectarDispositivo === 'function') {

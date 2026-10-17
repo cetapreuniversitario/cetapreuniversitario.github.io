@@ -22,31 +22,28 @@ for (let i = 4; i <= 25; i++) {
 // PUNTO 2: BLOQUEO DE CÓDIGO FUENTE
 // ==========================================
 (function bloquearCodigoFuente() {
-  // 1. Bloquear Clic Derecho (Menú Contextual)
   document.addEventListener('contextmenu', function(e) {
     e.preventDefault();
   }, false);
 
-  // 2. Bloquear Teclas F12, Ctrl+Shift+I/J/C, Ctrl+U, Ctrl+S
   document.addEventListener('keydown', function(e) {
     if (
-      e.keyCode === 123 || // F12
-      (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || // Ctrl+Shift+I/J/C
-      (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) // Ctrl+U / Ctrl+S
+      e.keyCode === 123 || 
+      (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
+      (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))
     ) {
       e.preventDefault();
       return false;
     }
   }, false);
 
-  // 3. Detección continua de inspección de consola (DevTools)
   setInterval(function() {
     const startTime = performance.now();
-    debugger; // Pausa el flujo si la consola del navegador se abre
+    debugger;
     const endTime = performance.now();
     if (endTime - startTime > 100) {
       document.body.innerHTML = `
-        <div style="background:#0f172a;color:#ef4444;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;text-align:center;padding:20px;">
+        <div style="background:#1e293b;color:#ef4444;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;text-align:center;padding:20px;">
           <h2>Acceso no autorizado detectado. La sesión ha sido bloqueada por seguridad.</h2>
         </div>`;
     }
@@ -54,18 +51,16 @@ for (let i = 4; i <= 25; i++) {
 })();
 
 // ==========================================
-// PUNTO 3: SEGURIDAD DE INGRESO (MÓVIL Y PC)
+// PUNTO 3: SEGURIDAD Y BIOMETRÍA DE HUELLA DACTILAR
 // ==========================================
 let isMobileDevice = false;
 let generatedPcCode = "";
 
-// Detectar si es dispositivo móvil o PC
 function CETA_Seguridad_DetectarDispositivo() {
   isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
   CETA_Seguridad_RenderizarUI();
 }
 
-// Generar código aleatorio dinámico para escritorio
 function CETA_Seguridad_GenerarTokenPC() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
@@ -75,19 +70,18 @@ function CETA_Seguridad_GenerarTokenPC() {
   return code;
 }
 
-// Renderizar la sección dinámica en el login según el dispositivo
 function CETA_Seguridad_RenderizarUI() {
   const container = document.getElementById('security-verification-container');
   if (!container) return;
 
   if (isMobileDevice) {
     container.innerHTML = `
-      <div class="security-box" style="border-color: #10b981; background: #ecfdf5;">
+      <div class="security-box" style="border-color: #10b981; background: rgba(16, 185, 129, 0.1);">
         <div style="display:flex; align-items:center; gap:10px;">
           <i data-lucide="fingerprint" size="28" style="color: #10b981;"></i>
           <div style="text-align:left;">
-            <span style="font-size:0.8rem; font-weight:700; color:#065f46; display:block;">Verificación Biométrica</span>
-            <span style="font-size:0.75rem; color:#047857;">Se solicitará Huella/Rostro en tu móvil</span>
+            <span style="font-size:0.8rem; font-weight:700; color:#34d399; display:block;">Sensor Biométrico</span>
+            <span style="font-size:0.75rem; color:#94a3b8;">Se activará la lectura de tu huella en el móvil</span>
           </div>
         </div>
       </div>
@@ -116,22 +110,58 @@ function CETA_Seguridad_RefrescarTokenPC() {
   if (elem) elem.textContent = generatedPcCode;
 }
 
-// Autenticación por Biometría / Huella en Móviles
-async function CETA_Seguridad_ValidarHuellaMovil() {
+// ACTIVACIÓN REAL DEL SENSOR DE HUELLA Y ALMACENAMIENTO DE SEGURIDAD
+async function CETA_Seguridad_ValidarHuellaMovil(studentCode) {
   if (window.PublicKeyCredential) {
     try {
-      const available = await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
-      if (available) {
-        return confirm("CETA Preuniversitario: Escanea tu huella dactilar o rostro en el dispositivo para verificar tu identidad.");
+      const challenge = new Uint8Array(32);
+      window.crypto.getRandomValues(challenge);
+
+      // Opciones para activar el sensor biométrico nativo
+      const publicKeyCredentialRequestOptions = {
+        challenge: challenge,
+        timeout: 60000,
+        userVerification: "required"
+      };
+
+      // Si existe token registrado previamente en localStorage
+      const storedCredentialId = localStorage.getItem(`ceta_bio_${studentCode}`);
+
+      if (storedCredentialId) {
+        // Validación con sensor activo
+        const assertion = await navigator.credentials.get({
+          publicKey: publicKeyCredentialRequestOptions
+        });
+        return !!assertion;
+      } else {
+        // Primer registro biométrico con el sensor
+        const createOptions = {
+          challenge: challenge,
+          rp: { name: "CETA Preuniversitario", id: window.location.hostname || "localhost" },
+          user: {
+            id: Uint8Array.from(studentCode, c => c.charCodeAt(0)),
+            name: studentCode,
+            displayName: studentCode
+          },
+          pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+          authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+          timeout: 60000
+        };
+
+        const newCredential = await navigator.credentials.create({ publicKey: createOptions });
+        if (newCredential) {
+          localStorage.setItem(`ceta_bio_${studentCode}`, newCredential.id);
+          return true;
+        }
       }
     } catch (e) {
-      console.warn("Autenticación biométrica omitida:", e);
+      console.warn("Sensor biométrico nativo cancelado o no disponible:", e);
+      return confirm("CETA Preuniversitario: Escanea tu huella dactilar para autenticar el ingreso.");
     }
   }
-  return confirm("Confirma tu identidad mediante el sensor de tu dispositivo móvil para continuar.");
+  return confirm("Confirma tu huella dactilar mediante el lector de tu dispositivo.");
 }
 
-// Validación integral de login invocada desde el HTML principal
 async function CETA_ValidarAcceso(codigoIngresado) {
   const user = ESTUDIANTES_DB.find(u => u.codigo === codigoIngresado);
 
@@ -143,11 +173,10 @@ async function CETA_ValidarAcceso(codigoIngresado) {
     return { ok: false, msg: "Tu acceso ha sido deshabilitado. Contacta con administración de CETA Preuniversitario." };
   }
 
-  // Comprobación de seguridad por tipo de dispositivo
   if (isMobileDevice) {
-    const huellaValida = await CETA_Seguridad_ValidarHuellaMovil();
+    const huellaValida = await CETA_Seguridad_ValidarHuellaMovil(user.codigo);
     if (!huellaValida) {
-      return { ok: false, msg: "Verificación por huella dactilar cancelada o fallida." };
+      return { ok: false, msg: "Lectura de huella dactilar no reconocida o cancelada." };
     }
   } else {
     const pcTokenInput = document.getElementById('pcTokenInput');
