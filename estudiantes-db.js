@@ -5,7 +5,7 @@
 const ESTUDIANTES_DB = [
   { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
   { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 },
-  { codigo: "admin", nombre: "Teddy Admin", activo: 1 },
+  { codigo: "admin", nombre: "Administrador", activo: 1 },
   { codigo: "Estudiante3-CETA", nombre: "Marcos Torres", activo: 0 }
 ];
 
