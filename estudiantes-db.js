@@ -4,7 +4,7 @@
 // ==========================================
 const ESTUDIANTES_DB = [
   { codigo: "admin", nombre: "Administrador", activo: 1 },
-  { codigo: "docente", nombre: "Docente", activo: 1 },
+  { codigo: "docente", nombre: "Profesor", activo: 1 },
   { codigo: "NoreliCETA", nombre: "Norelia Mercedes Barberan Cusme", activo: 1 },
   { codigo: "MelinaCETA", nombre: "Melina Mercedes Cusme Rivas", activo: 1 },
   { codigo: "ByronCETA", nombre: "Byron Serrano", activo: 1 },
