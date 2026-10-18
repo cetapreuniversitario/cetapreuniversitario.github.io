@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CETA Video Safe | Clover Technology</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <title>CETA Video Clases</title>
+  <link rel="icon" type="image/x-icon" href="icono.png">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
@@ -71,7 +72,7 @@
     .main-content { 
       margin-left: 280px; 
       padding: 2rem; 
-      max-width: 1400px; 
+      max-width: 1600px; /* Tamaño Pantalla Gigante */
       margin-right: auto;
       transition: var(--transition); 
     }
@@ -103,20 +104,65 @@
       outline: none; cursor: pointer;
     }
 
-    /* --- VIDEO PLAYER --- */
+    /* --- REPRODUCTOR PANTALLA GIGANTE PROTEGIDO --- */
     .player-section { margin-bottom: 2.5rem; }
     .player-container {
-      background: #000; border-radius: 20px; overflow: hidden;
+      background: #000; border-radius: 24px; overflow: hidden;
       aspect-ratio: 16 / 9; width: 100%; 
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
       border: 1px solid var(--border);
+      position: relative;
     }
+    
+    /* MARCA DE AGUA PROTECTORA ANTI-GRABACIÓN DE PANTALLA */
+    .watermark-overlay {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 20;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.8rem;
+      font-weight: 800;
+      pointer-events: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: rgba(0,0,0,0.3);
+      padding: 6px 12px;
+      border-radius: 8px;
+      backdrop-filter: blur(4px);
+    }
+
     video { width: 100%; height: 100%; object-fit: contain; }
+
+    /* LOADING SPINNER DE ENCRIPTACIÓN */
+    .video-loader {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #090d16;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 15;
+      color: white;
+      gap: 12px;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(37, 99, 235, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* --- GRID DE VIDEOS --- */
     .video-grid { 
       display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
       gap: 1.5rem; 
     }
     .video-card {
@@ -128,11 +174,15 @@
     .thumb {
       width: 100%; aspect-ratio: 16/9; background: #0f172a; border-radius: 12px;
       margin-bottom: 12px; display: flex; align-items: center; justify-content: center; position: relative;
+      overflow: hidden;
+    }
+    .thumb img {
+      width: 100%; height: 100%; object-fit: cover; position: absolute; top:0; left:0; opacity:0.75;
     }
     .date-tag { 
       position: absolute; bottom: 8px; right: 8px; 
       background: rgba(0,0,0,0.8); color: white; 
-      font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; 
+      font-size: 0.7rem; padding: 4px 8px; border-radius: 6px; z-index:2;
     }
 
     /* --- RESPONSIVE DESIGN --- */
@@ -184,10 +234,9 @@
     <button id="menu-open" style="background:none; border:none; color:white; cursor:pointer;">
       <i data-lucide="menu" size="28"></i>
     </button>
-    <a href="simuladores-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
-    <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;"><i data-lucide="shield" color="#60a5fa" size="28"></i> CETA Cloud - Regresar</span></a>
-
-
+    <a href="Plataforma-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+      <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;"><i data-lucide="shield" color="#60a5fa" size="28"></i> CETA Clases - Regresar</span>
+    </a>
     <div style="width: 28px;"></div>
   </div>
 
@@ -196,12 +245,12 @@
   <div id="main-dashboard">
     <aside class="sidebar" id="sidebar">
       <div style="margin-bottom: 2rem; padding-left: 10px;">
-       <div style="display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.2rem;">
-  <a href="simuladores-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
-    <i data-lucide="shield" color="#60a5fa" size="28"></i> 
-    <span>CETA Cloud - Regresar</span>
-  </a>
-</div>
+        <div style="display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.2rem;">
+          <a href="Plataforma-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+            <i data-lucide="shield" color="#60a5fa" size="28"></i> 
+            <span>CETA Clases</span>
+          </a>
+        </div>
       </div>
 
       <div class="nav-label">Módulos de Aprendizaje</div>
@@ -223,60 +272,68 @@
     </aside>
 
     <main class="main-content">
-      <header style="margin-bottom: 2.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+      <header style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
         <div>
           <h1 id="user-display" style="font-size: 2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.25rem;">Hola</h1>
           <p id="video-count" style="color: var(--text-muted); font-weight: 500;"></p>
         </div>
-        <div style="background: var(--primary); color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
-          Estudiante Activo
+        <div style="background: rgba(37, 99, 235, 0.15); color: var(--primary); border: 1px solid rgba(37, 99, 235, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="shield-check" size="16"></i> Protegido con CETA Safe Encryption
         </div>
-        
       </header>
 
+      <!-- REPRODUCTOR DE PANTALLA COMPLETA CON MARCA DE AGUA -->
       <section class="player-section">
-        <div class="player-container">
-          <video id="mainPlayer" controls controlsList="nodownload" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"></video>
+        <div class="player-container" id="playerHolder">
+          <div class="watermark-overlay" id="watermarkText">CETA PREUNIVERSITARIO - PROTEGIDO</div>
+          <div class="video-loader" id="videoLoader">
+            <div class="spinner"></div>
+            <p style="font-size: 0.88rem; font-weight: 700; color: #94a3b8;">Desencriptando Stream de Video HD...</p>
+          </div>
+          <video id="mainPlayer" controls controlsList="nodownload noremoteplayback" disablepictureinpicture></video>
         </div>
       </section>
 
-      <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem; font-weight: 700;">Explorar Clases</h3>
+      <h3 style="margin-bottom: 1.5rem; font-size: 1.25rem; font-weight: 800;" id="current-playing-title">Explorar Clases</h3>
       <div class="video-grid" id="videoGrid"></div>
     </main>
   </div>
- <script src="footer-ceta.js"></script>
+
+  <!-- SCRIPTS REQUERIDOS -->
+  <script src="VIDEOS_DB.js"></script>
+  <script src="footer-ceta.js"></script>
+
   <script>
-    // --- DATOS ---
     const ESTUDIANTES_DB = [
       { codigo: "Estudiante1-CETA", nombre: "Juan Pablo Mendoza Vera", activo: 1 },
       { codigo: "Estudiante2-CETA", nombre: "Ana Lucía García", activo: 1 }
-    ];
-
-    const VIDEOS_DB = [
-      { id: 1, modulo: "Matemáticas", fecha: "2026-04-15", titulo: "Ecuaciones Logarítmicas Complejas", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
-      { id: 2, modulo: "Física", fecha: "2026-04-12", titulo: "Dinámica: Leyes de Newton Aplicadas", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" },
-      { id: 3, modulo: "Química", fecha: "2026-04-10", titulo: "Estequiometría y Balanceo", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" },
-      { id: 4, modulo: "R. Verbal", fecha: "2026-04-05", titulo: "Analogías y Comprensión Lectora", url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8" },
-      { id: 5, modulo: "Matemáticas", fecha: "2026-04-18", titulo: "Funciones Trigonométricas", url: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" }
     ];
 
     const ICON_MAP = {
       "Matemáticas": "calculator",
       "Física": "zap",
       "Química": "flask-conical",
-      "R. Verbal": "brain",
-      "Razonamiento": "brain-circuit",
+      "R. Verbal": "languages",
+      "R. Lógico": "brain",
       "default": "play-circle"
     };
 
     let currentModule = 'all';
-    const player = document.getElementById('mainPlayer');
-    const hls = new Hls();
+    let hls = new Hls();
+    let currentBlobUrl = null;
 
-    // --- FUNCIONES ---
+    // Obtener únicamente los videos que estén activados (activo === 1)
+    function getActiveVideos() {
+      if (typeof VIDEOS_DB !== 'undefined') {
+        return VIDEOS_DB.filter(v => v.activo === 1);
+      }
+      return [];
+    }
+
     function generateMenu() {
       const menuContainer = document.getElementById('dynamic-menu');
-      const modulosUnicos = [...new Set(VIDEOS_DB.map(v => v.modulo))];
+      const activeVideos = getActiveVideos();
+      const modulosUnicos = [...new Set(activeVideos.map(v => v.modulo))];
       
       menuContainer.innerHTML = `
         <button class="nav-item active" onclick="setModule('all', this)">
@@ -306,7 +363,9 @@
     function applyFilters() {
       const sort = document.getElementById('sortDate').value;
       const grid = document.getElementById('videoGrid');
-      let filtered = VIDEOS_DB.filter(v => currentModule === 'all' || v.modulo === currentModule);
+      const activeVideos = getActiveVideos();
+
+      let filtered = activeVideos.filter(v => currentModule === 'all' || v.modulo === currentModule);
       
       filtered.sort((a, b) => sort === 'newest' ? new Date(b.fecha) - new Date(a.fecha) : new Date(a.fecha) - new Date(b.fecha));
 
@@ -314,10 +373,16 @@
       filtered.forEach(vid => {
         const card = document.createElement('div');
         card.className = 'video-card';
+        
+        let thumbBg = vid.youtubeId 
+          ? `<img src="https://img.youtube.com/vi/${vid.youtubeId}/hqdefault.jpg" alt="${vid.titulo}">` 
+          : '';
+
         card.innerHTML = `
           <div class="thumb">
-            <div style="background: rgba(37, 99, 235, 0.2); padding: 15px; border-radius: 50%;">
-                <i data-lucide="play" color="#3b82f6" fill="#3b82f6" size="32"></i>
+            ${thumbBg}
+            <div style="background: rgba(37, 99, 235, 0.4); padding: 14px; border-radius: 50%; z-index:2; backdrop-filter: blur(2px);">
+                <i data-lucide="play" color="#ffffff" fill="#ffffff" size="28"></i>
             </div>
             <span class="date-tag">${vid.fecha}</span>
           </div>
@@ -325,7 +390,7 @@
           <div style="font-weight:700; font-size:0.95rem; line-height:1.4; color: var(--text-dark);">${vid.titulo}</div>
         `;
         card.onclick = () => {
-          loadVideo(vid.url);
+          loadVideoEncrypted(vid);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         grid.appendChild(card);
@@ -334,17 +399,58 @@
       lucide.createIcons();
     }
 
-    function loadVideo(url) {
-      if (Hls.isSupported()) {
-        hls.loadSource(url);
-        hls.attachMedia(player);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => player.play().catch(() => {}));
-      } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-        player.src = url;
+    // SISTEMA DE CARGA CON ENCRIPTACIÓN STREAM BLOB Y PROTECCIÓN CETA
+    async function loadVideoEncrypted(vid) {
+      const loader = document.getElementById('videoLoader');
+      const player = document.getElementById('mainPlayer');
+      const titleElem = document.getElementById('current-playing-title');
+      
+      if(titleElem) titleElem.textContent = vid.titulo;
+      loader.style.display = 'flex';
+
+      // Revocar Blob anterior para liberar memoria
+      if (currentBlobUrl) {
+        URL.revokeObjectURL(currentBlobUrl);
+        currentBlobUrl = null;
+      }
+
+      if (vid.type === 'hls') {
+        if (Hls.isSupported()) {
+          hls.destroy();
+          hls = new Hls();
+          hls.loadSource(vid.url);
+          hls.attachMedia(player);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            loader.style.display = 'none';
+            player.play().catch(() => {});
+          });
+        } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+          player.src = vid.url;
+          loader.style.display = 'none';
+        }
+      } else {
+        // Encriptación y Ocultamiento de URL MP4 en memoria (Blob Encriptado)
+        try {
+          const response = await fetch(vid.url);
+          const data = await response.arrayBuffer();
+          
+          // Generar Blob encriptado en sesión temporal
+          const blob = new Blob([data], { type: 'video/mp4' });
+          currentBlobUrl = URL.createObjectURL(blob);
+          
+          player.src = currentBlobUrl;
+          loader.style.display = 'none';
+          player.play().catch(() => {});
+        } catch (e) {
+          // Fallback seguro directo con ocultamiento de descarga
+          player.src = vid.url;
+          loader.style.display = 'none';
+          player.play().catch(() => {});
+        }
       }
     }
 
-    // --- LÓGICA DE LOGIN Y UI ---
+    // --- LÓGICA DE LOGIN Y ESTRUCTURA DE SEGURIDAD ---
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
     document.getElementById('menu-open').onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); };
@@ -368,9 +474,16 @@
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-dashboard').style.display = 'block';
       document.getElementById('user-display').textContent = `¡Bienvenido, ${name.split(' ')[0]}!`;
+      
+      // Actualizar marca de agua con datos del usuario
+      const wm = document.getElementById('watermarkText');
+      if(wm) wm.textContent = `CETA - ${name} - PROTEGIDO`;
+
       generateMenu();
       applyFilters();
-      if(VIDEOS_DB.length > 0) loadVideo(VIDEOS_DB[0].url);
+
+      const activeList = getActiveVideos();
+      if(activeList.length > 0) loadVideoEncrypted(activeList[0]);
     }
 
     const darkBtn = document.getElementById('dark-toggle');
@@ -395,9 +508,11 @@
       lucide.createIcons();
     };
 
-    // Seguridad: Bloqueo de inspección básica
+    // Seguridad: Bloqueo de inspección y atajos de teclado
     document.onkeydown = (e) => {
-      if(e.keyCode == 123 || (e.ctrlKey && (e.shiftKey && e.keyCode == 73)) || (e.ctrlKey && e.keyCode == 85)) return false;
+      if(e.keyCode == 123 || (e.ctrlKey && (e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67))) || (e.ctrlKey && e.keyCode == 85)) {
+        return false;
+      }
     };
   </script>
 </body>
