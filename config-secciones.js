@@ -1,4 +1,5 @@
 const CONFIG_SECCIONES = {
+  Lógica: 1,
   matematicas: 0,
   quimica: 0,
   razonamiento_verbal: 0,

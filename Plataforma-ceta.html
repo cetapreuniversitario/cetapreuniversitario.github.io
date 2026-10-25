@@ -12,13 +12,12 @@
        SISTEMA DE TEMAS: MODO CLARO Y MODO OSCURO
        ========================================== */
     :root {
-      /* MODO CLARO ORIGINAL POR DEFECTO */
-      --bg-main: #f8fafc;         /* Blanco Azulado Claro */
-      --card-bg: #ffffff;         /* Tarjeta Blanca Limpia */
-      --card-border: #e2e8f0;     /* Borde Gris Suave */
+      --bg-main: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
       --sidebar-bg: #ffffff;
-      --text-main: #0f172a;       /* Texto Principal Oscuro */
-      --text-muted: #64748b;     /* Texto Secundario Gris */
+      --text-main: #0f172a;
+      --text-muted: #64748b;
       --input-bg: #f1f5f9;
       --border: #cbd5e1;
       
@@ -34,13 +33,12 @@
     }
 
     body.dark-mode {
-      /* MODO OSCURO (INVERSIÓN ELEGANTE) */
-      --bg-main: #111827;       /* Azul Grisáceo Oscuro */
-      --card-bg: #1f2937;       /* Gris Oscuro Slate */
-      --card-border: #374151;   /* Borde Gris Suave */
+      --bg-main: #111827;
+      --card-bg: #1f2937;
+      --card-border: #374151;
       --sidebar-bg: #1f2937;
-      --text-main: #f9fafb;     /* Texto Principal Claro */
-      --text-muted: #9ca3af;     /* Texto Secundario */
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
       --input-bg: #111827;
       --border: #374151;
       
@@ -349,7 +347,7 @@
 
     .schedule-table {
       width: 100%;
-      min-width: 540px; /* Evita que las columnas se aplasten en pantallas pequeñas */
+      min-width: 540px; 
       border-collapse: collapse;
       text-align: left;
       font-size: 0.88rem;
@@ -490,11 +488,11 @@
 
     .dropdown-item:hover { background: rgba(239, 68, 68, 0.12); }
 
-    /* --- BOTÓN FLOTANTE ORIGINAL PARA MODO OSCURO / RESPONSIVE --- */
+    /* --- BOTÓN FLOTANTE --- */
     .theme-toggle-floating {
       position: fixed;
       bottom: 20px;
-      left: 20px; /* Mantener abajo a la izquierda */
+      left: 20px; 
       z-index: 1500;
       background: var(--card-bg);
       color: var(--text-main);
@@ -624,7 +622,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 0.5rem;
     }
 
     .modal-title {
@@ -670,32 +668,6 @@
       flex-shrink: 0;
     }
 
-    /* ESTILOS DE EJERCICIOS */
-    .exercise-card {
-      background: var(--input-bg);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1rem 1.2rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .exercise-num {
-      display: inline-block;
-      background: rgba(37, 99, 235, 0.15);
-      color: var(--primary);
-      font-weight: 800;
-      font-size: 0.75rem;
-      padding: 2px 8px;
-      border-radius: 6px;
-      margin-bottom: 6px;
-    }
-
-    .exercise-text {
-      font-size: 0.92rem;
-      color: var(--text-main);
-      line-height: 1.45;
-    }
-
     /* MENÚ MÓVIL Y RESPONSIVO FLUIDO */
     .overlay {
       display: none;
@@ -732,7 +704,7 @@
       }
 
       .user-pill span {
-        display: none; /* Ocultar texto largo del usuario en móviles */
+        display: none; 
       }
       
       .theme-toggle-floating {
@@ -961,8 +933,14 @@
             <div class="course-badge" style="background: var(--accent-logic);"><i data-lucide="brain"></i></div>
             <h3>R. Lógico</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Porcentajes, Series y Deducción.</p>
-            <a onclick="openExercisesModal()" class="sim-link" style="background: rgba(219,39,119,0.12); border-color: rgba(219,39,119,0.3); color: var(--accent-logic);">
-              <span>Ejercicios Página 7 (Tarea)</span> <i data-lucide="book-open" size="14"></i>
+            
+            <a href="simulador_lógica.html" class="sim-link">
+              <span>Acceder al Simulador de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
+            </a>
+
+            <!-- Abre directamente las notificaciones para leer los enunciados -->
+            <a onclick="openNotifModal()" class="sim-link" style="background: rgba(219,39,119,0.12); border-color: rgba(219,39,119,0.3); color: var(--accent-logic); margin-top: 8px;">
+              <span>Tarea: Ejercicios Pág 10 - 22</span> <i data-lucide="book-open" size="14"></i>
             </a>
           </div>
 
@@ -979,7 +957,7 @@
     </div>
   </div>
 
-  <!-- Modal Notificación de Tareas Pendientes -->
+  <!-- Modal Notificación de Tareas Pendientes (SOLO ENUNCIADOS) -->
   <div class="modal" id="notif-modal">
     <div class="modal-card">
       <div class="modal-header">
@@ -990,63 +968,34 @@
         <button class="btn-close" id="close-notif-modal"><i data-lucide="x" size="20"></i></button>
       </div>
 
-      <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 1.25rem; margin-top: 0.5rem;">
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-          <span style="background: #ef4444; color: white; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">
-            Tarea Pendiente
-          </span>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">Entrega: Próximo Sábado</span>
-        </div>
-        <h4 style="font-size: 1rem; font-weight: 700; color: #ef4444; margin-bottom: 6px;">Módulo de Razonamiento Lógico</h4>
-        <p style="font-size: 0.9rem; color: var(--text-main); line-height: 1.4;">
-          Deben realizar todos los <strong>ejercicios de la página 7</strong> del módulo de <strong>RAZONAMIENTO LÓGICO</strong> para la clase del siguiente sábado.
-        </p>
-        <button onclick="closeNotifAndOpenExercises()" style="margin-top: 1rem; width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i data-lucide="book-open" size="16"></i> Ver Ejercicios de la Página 7
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Apartado Ejercicios Página 7 -->
-  <div class="modal" id="exercises-modal">
-    <div class="modal-card modal-large">
-      <div class="modal-header">
-        <div class="modal-title">
-          <i data-lucide="brain" style="color: var(--accent-logic);"></i>
-          <span>Ejercicios de la Página 7 - Razonamiento Lógico</span>
-        </div>
-        <button class="btn-close" id="close-exercises-modal"><i data-lucide="x" size="20"></i></button>
-      </div>
-
       <div class="modal-body-scroll">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
-          Ejercicios de aplicación 1: Porcentajes y Razonamiento Matemático (Módulo CETA).
-        </p>
+        <!-- NOTIFICACIÓN 1: TAREA ACTUAL DE LA SEMANA -->
+        <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 1.25rem; margin-top: 0.5rem; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="background: #ef4444; color: white; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">
+              Tarea de esta semana
+            </span>
+            <span style="font-size: 0.8rem; color: var(--text-main); font-weight: 600;">Entrega: Próximo Sábado</span>
+          </div>
+          <h4 style="font-size: 1rem; font-weight: 700; color: #ef4444; margin-bottom: 6px;">Módulo de Razonamiento Lógico</h4>
+          <p style="font-size: 0.9rem; color: var(--text-main); line-height: 1.45;">
+            <strong>Enunciado de Tarea:</strong> Resolver los ejercicios propuestos en clases correspondientes a las páginas de la <strong>10 a la 22</strong> del módulo CETA para la siguiente sesión presencial.
+          </p>
+        </div>
 
-        <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--primary); margin-bottom: 0.8rem; font-weight: 800;">
-          📌 Ejercicios Nivel Aplicación
-        </h4>
-
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 1</span><p class="exercise-text">Una mochila cuesta $50 y tiene un descuento del 20%. ¿Cuál es su precio final?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 2</span><p class="exercise-text">Un par de zapatos cuesta $80 y tiene un descuento del 15%. ¿Cuánto se debe pagar finalmente?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 3</span><p class="exercise-text">Una computadora tiene un precio de $600 y se aplica un descuento del 10%. ¿Cuál es el precio final de la computadora?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 4</span><p class="exercise-text">Una bicicleta cuesta $240 y tiene un descuento del 25%. ¿Cuánto dinero se ahorra y cuál es su precio final?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 5</span><p class="exercise-text">Una tienda ofrece una camiseta de $30 con un descuento del 30%. ¿Cuál será el precio que deberá pagar el cliente?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 6</span><p class="exercise-text">Un teléfono celular cuesta $400. Durante una promoción se aplica un descuento del 12%. ¿Cuál es el precio final?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 7</span><p class="exercise-text">Una refrigeradora tiene un precio de $900 y se encuentra con un descuento del 20%. ¿Cuánto pagará el comprador?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 8</span><p class="exercise-text">Un estudiante compra una calculadora que cuesta $40 y recibe un descuento del 15%. ¿Cuánto pagará por ella?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 9</span><p class="exercise-text">Una computadora portátil cuesta $750. Si se aplica un descuento del 18%, ¿cuál será su precio final?</p></div>
-        <div class="exercise-card"><span class="exercise-num">Ejercicio 10</span><p class="exercise-text">Una tienda vende una chaqueta por $120 y ofrece un descuento del 25%. ¿Cuál es el valor del descuento y cuánto deberá pagar el cliente?</p></div>
-
-        <h4 style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-verbal); margin: 1.2rem 0 0.8rem 0; font-weight: 800;">
-          🔥 Ejercicios con Mayor Nivel de Razonamiento
-        </h4>
-
-        <div class="exercise-card"><span class="exercise-num" style="background: rgba(217, 119, 6, 0.15); color: var(--accent-verbal);">Ejercicio 11</span><p class="exercise-text">Una mochila cuesta $80. Primero se aplica un descuento del 20% y posteriormente se aplica un descuento adicional del 10% sobre el nuevo precio. ¿Cuál es el precio final?</p></div>
-        <div class="exercise-card"><span class="exercise-num" style="background: rgba(217, 119, 6, 0.15); color: var(--accent-verbal);">Ejercicio 12</span><p class="exercise-text">Un artículo cuesta $200. En una promoción se realiza un descuento del 15%. Si el cliente paga con $200, ¿cuánto dinero recibirá de cambio?</p></div>
-        <div class="exercise-card"><span class="exercise-num" style="background: rgba(217, 119, 6, 0.15); color: var(--accent-verbal);">Ejercicio 13</span><p class="exercise-text">Una bicicleta cuesta $500. Por una promoción especial, su precio se reduce en $75. ¿Qué porcentaje de descuento representa esta reducción?</p></div>
-        <div class="exercise-card"><span class="exercise-num" style="background: rgba(217, 119, 6, 0.15); color: var(--accent-verbal);">Ejercicio 14</span><p class="exercise-text">Un estudiante dispone de $100 para comprar materiales escolares. Si utiliza el 35% de su dinero en libros y el 25% en cuadernos, ¿cuánto dinero le queda?</p></div>
+        <!-- NOTIFICACIÓN 2: TAREA PASADA -->
+        <div style="background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="background: var(--text-muted); color: white; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">
+              Tarea Pasada
+            </span>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Entregada y Revisada</span>
+          </div>
+          <h4 style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">Módulo de Razonamiento Lógico</h4>
+          <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.45;">
+            <strong>Enunciado de Tarea:</strong> Resolver los ejercicios correspondientes a la <strong>página 7</strong>. Ya fueron resueltos y calificados en la sesión anterior.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -1145,7 +1094,6 @@
       }
     });
 
-    // Iniciar temporizador invisible de 10 minutos
     function startInvisibleTimer() {
       clearTimeout(primaryTimer);
       clearTimeout(extensionTimer);
@@ -1184,7 +1132,6 @@
       renderDashboard(authResult.user.nombre);
     }
 
-    // APLICAR FILTRADO ESTRICTO DE SECCIONES (OCULTA LAS QUE ESTÁN EN 0)
     function aplicarConfiguracionSecciones() {
       const mapaSecciones = {
         matematicas: 'card-matematicas',
@@ -1245,9 +1192,6 @@
     const notifModal = document.getElementById('notif-modal');
     const closeNotifModal = document.getElementById('close-notif-modal');
 
-    const exercisesModal = document.getElementById('exercises-modal');
-    const closeExercisesModal = document.getElementById('close-exercises-modal');
-
     function closeSidebarMobile() {
       sidebar.classList.remove('active');
       overlay.classList.remove('active');
@@ -1260,7 +1204,6 @@
       overlay.classList.remove('active'); 
       scheduleModal.classList.remove('active'); 
       notifModal.classList.remove('active');
-      exercisesModal.classList.remove('active');
     }
 
     overlay.onclick = closeAllModals;
@@ -1282,29 +1225,21 @@
     };
 
     notifBell.onclick = () => {
+      openNotifModal();
+    };
+
+    // Función simplificada para abrir notificaciones
+    function openNotifModal() {
+      closeAllModals();
       notifModal.classList.add('active');
       overlay.classList.add('active');
       lucide.createIcons();
-    };
-
-    function openExercisesModal() {
-      closeAllModals();
-      exercisesModal.classList.add('active');
-      overlay.classList.add('active');
-      lucide.createIcons();
-    }
-
-    function closeNotifAndOpenExercises() {
-      notifModal.classList.remove('active');
-      openExercisesModal();
     }
 
     closeModal.onclick = () => { scheduleModal.classList.remove('active'); overlay.classList.remove('active'); };
     closeNotifModal.onclick = () => { notifModal.classList.remove('active'); overlay.classList.remove('active'); };
-    closeExercisesModal.onclick = () => { exercisesModal.classList.remove('active'); overlay.classList.remove('active'); };
 
     window.onload = () => {
-      // Cargar preferencia de tema guardada (Tema Claro por defecto)
       const savedTheme = localStorage.getItem('ceta_theme');
       if (savedTheme === 'dark') {
         applyTheme(true);

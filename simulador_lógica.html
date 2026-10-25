@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador CETA - Razonamiento Lógico</title>
+    <link rel="icon" type="image/x-icon" href="icono.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --glass-bg: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger: #ef4444;
+            --success: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--glass-border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto 4rem auto;
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        #login-screen {
+            max-width: 400px;
+            margin: 5rem auto;
+            text-align: center;
+            display: none;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            background: var(--primary);
+            width: 100%;
+        }
+        @media(min-width: 480px) {
+            button { width: auto; }
+        }
+        button:hover { background: var(--primary-hover); transform: translateY(-2px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        #btn-finish { background: var(--danger); }
+        #btn-finish:hover { background: #dc2626; }
+        
+        #btn-pdf { background: var(--success); display: none; }
+        #btn-pdf:hover { background: #059669; }
+
+        #btn-logout-custom {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+            padding: 0.5rem 1rem;
+        }
+        #btn-logout-custom:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--glass-border);
+            transition: background 0.3s ease;
+        }
+
+        .question-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, border 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .option-label:hover { background: rgba(255, 255, 255, 0.05); }
+        input[type="radio"] { accent-color: var(--primary); width: 18px; height: 18px; cursor: pointer; }
+
+        .option-label.correct {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--success);
+            color: #34d399;
+        }
+        .option-label.incorrect {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid var(--danger);
+            color: #f87171;
+        }
+
+        .ai-status {
+            margin-top: 1rem;
+            padding: 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            display: none;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .ai-score {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--success);
+            margin-bottom: 0.5rem;
+        }
+        .ai-feedback-text {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- PANTALLA DE LOGIN -->
+    <div id="login-screen" class="container">
+        <h2 style="margin-top:0;">Acceso al Simulador</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Ingresa tus credenciales para continuar</p>
+        
+        <div class="input-group">
+            <label class="input-label">Código de Estudiante</label>
+            <input type="text" id="codigoEstudiante" class="input-field" placeholder="Ej: admin, NoreliCETA...">
+        </div>
+
+        <button id="btn-login" style="margin-top: 1rem; background: var(--primary);">Ingresar al Sistema</button>
+        <div id="login-error" style="color: var(--danger); margin-top: 1rem; font-size: 0.9rem; display: none;">Código inválido.</div>
+    </div>
+
+    <!-- PANTALLA DEL SIMULADOR -->
+    <div id="simulator-screen" style="display: none; flex-direction: column; min-height: 100vh;">
+        <div class="top-bar">
+            <div class="student-info">
+                <i data-lucide="user-circle"></i>
+                <span id="student-name-display">Cargando...</span>
+            </div>
+            <button id="btn-logout-custom" onclick="document.getElementById('logout-modal').style.display='flex'">
+                <i data-lucide="log-out" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-right: 5px;"></i> Cerrar Sesión
+            </button>
+        </div>
+
+        <div class="container" style="flex: 1;">
+            <div class="header">
+                <div>
+                    <h1 style="margin:0;">Simulador CETA</h1>
+                    <p style="margin: 5px 0 0 0; color: var(--text-muted);">Razonamiento Lógico | Práctica Integral</p>
+                </div>
+                <div class="timer-display" id="timer">90:00</div>
+            </div>
+
+            <div class="controls">
+                <button id="btn-reload" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);">Reiniciar Simulador</button>
+                <button id="btn-finish">Finalizar Simulador</button>
+                <button id="btn-pdf">Descargar Reporte PDF</button>
+            </div>
+
+            <div id="ai-status" class="ai-status">
+                <div class="ai-score" id="ai-score-display">Evaluación Completada: 0/0</div>
+                <div class="ai-feedback-text" id="ai-feedback-display">Revisa los resultados detallados a continuación.</div>
+            </div>
+
+            <div id="questions-container"></div>
+        </div>
+
+        <!-- FOOTER INTEGRADO -->
+        <footer style="margin-top: auto; padding: 2rem 1rem; text-align: center; border-top: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px);">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+                <i data-lucide="graduation-cap" style="color: var(--primary);" size="20"></i>
+                <span style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">CETA Preuniversitario</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">&copy; 2026 Plataforma Académica de Preparación. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <!-- MODAL DE CIERRE DE SESIÓN -->
+    <div id="logout-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: var(--glass-bg); padding: 2rem; border-radius: 16px; border: 1px solid var(--glass-border); text-align: center; max-width: 400px; width: 90%; box-shadow: var(--glass-shadow);">
+            <div style="width: 60px; height: 60px; background: rgba(239, 68, 68, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: #ef4444;">
+                <i data-lucide="alert-triangle" size="32"></i>
+            </div>
+            <h3 style="margin-top: 0; font-size: 1.4rem;">¿Cerrar sesión y salir?</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.8rem; line-height: 1.4;">
+                Si cierras sesión, <strong>todos los datos de tu examen en progreso se perderán irremediablemente</strong> y regresarás a la plataforma principal de CETA.
+            </p>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="document.getElementById('logout-modal').style.display='none'" style="background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--text-main);">Cancelar</button>
+                <button onclick="localStorage.removeItem('ceta_session'); window.location.href='Plataforma-ceta.html';" style="background: var(--danger); color: white;">Sí, salir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ARCHIVOS JS VINCULADOS -->
+    <script src="estudiantes-db.js"></script>
+    <script src="script.js"></script>
+    <script src="footer-ceta.js"></script>
+</body>
+</html>
