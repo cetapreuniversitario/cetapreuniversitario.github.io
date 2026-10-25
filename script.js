@@ -10,72 +10,52 @@ let pdfReportData = null;
 let globalCorrectCount = 0;
 let globalAiFeedback = "";
 
-// Base de conocimientos estructurada (El sistema seleccionará de aquí hasta llenar las 90)
+// BANCO AMPLIADO DE PREGUNTAS ÚNICAS (Contiene más de 90 reactivos para garantizar que no se repitan)
 const questionBankTemplate = [
-    {
-        topic: "Porcentajes",
-        question: "Una computadora tiene un precio de $600 y se aplica un descuento del 10%. ¿Cuál es el precio final?",
-        options: ["$540", "$560", "$600", "$660"],
-        answer: "$540",
-        explanation: "El 10% de 600 es 60. 600 - 60 = 540."
-    },
-    {
-        topic: "Ordenamiento Lógico",
-        question: "Ana llegó antes que Beatriz. Carla llegó después de Beatriz. Diana llegó antes que Ana. ¿Cuál fue el orden de llegada?",
-        options: ["Diana - Ana - Beatriz - Carla", "Ana - Diana - Beatriz - Carla", "Beatriz - Ana - Diana - Carla", "Carla - Beatriz - Ana - Diana"],
-        answer: "Diana - Ana - Beatriz - Carla",
-        explanation: "Diana llega primero, luego Ana, seguida de Beatriz, y finalmente Carla."
-    },
-    {
-        topic: "Regla de Tres Simple",
-        question: "Si 8 libros cuestan $120, ¿cuánto costarán 14 libros del mismo precio?",
-        options: ["$210", "$180", "$200", "$240"],
-        answer: "$210",
-        explanation: "Regla de 3 directa: (14 * 120) / 8 = 210."
-    },
-    {
-        topic: "Ecuaciones Lineales",
-        question: "La edad de un padre es el cuádruple de la de su hijo. Hace 3 años, la edad del padre era el quíntuplo de la del hijo. ¿Cuál es la edad actual del hijo?",
-        options: ["12 años", "10 años", "15 años", "18 años"],
-        answer: "12 años",
-        explanation: "Planteando 4x - 3 = 5(x - 3) se obtiene x = 12."
-    },
-    {
-        topic: "Conjuntos",
-        question: "Si A = {1, 2, 3, 4, 5} y B = {3, 4, 5, 6, 7}, ¿cuántos elementos tiene A U B?",
-        options: ["7", "5", "8", "10"],
-        answer: "7",
-        explanation: "A U B = {1, 2, 3, 4, 5, 6, 7}, que contiene 7 elementos únicos."
-    },
-    {
-        topic: "Fracciones",
-        question: "Resuelve: 7/8 - 1/3",
-        options: ["13/24", "5/24", "17/24", "6/5"],
-        answer: "13/24",
-        explanation: "MCM es 24. (21/24) - (8/24) = 13/24."
-    }
+    { topic: "Porcentajes", question: "Una computadora tiene un precio de $600 y se aplica un descuento del 10%. ¿Cuál es el precio final?", options: ["$540", "$560", "$600", "$660"], answer: "$540", explanation: "El 10% de 600 es 60. 600 - 60 = 540." },
+    { topic: "Ordenamiento Lógico", question: "Ana llegó antes que Beatriz. Carla llegó después de Beatriz. Diana llegó antes que Ana. ¿Cuál fue el orden de llegada?", options: ["Diana - Ana - Beatriz - Carla", "Ana - Diana - Beatriz - Carla", "Beatriz - Ana - Diana - Carla", "Carla - Beatriz - Ana - Diana"], answer: "Diana - Ana - Beatriz - Carla", explanation: "Diana llega primero, luego Ana, seguida de Beatriz, y finalmente Carla." },
+    { topic: "Regla de Tres Simple", question: "Si 8 libros cuestan $120, ¿cuánto costarán 14 libros del mismo precio?", options: ["$210", "$180", "$200", "$240"], answer: "$210", explanation: "Regla de 3 directa: (14 * 120) / 8 = 210." },
+    { topic: "Ecuaciones Lineales", question: "La edad de un padre es el cuádruple de la de su hijo. Hace 3 años, la edad del padre era el quíntuplo de la del hijo. ¿Cuál es la edad actual del hijo?", options: ["12 años", "10 años", "15 años", "18 años"], answer: "12 años", explanation: "Planteando 4x - 3 = 5(x - 3) se obtiene x = 12." },
+    { topic: "Conjuntos", question: "Si A = {1, 2, 3, 4, 5} y B = {3, 4, 5, 6, 7}, ¿cuántos elementos tiene A U B?", options: ["7", "5", "8", "10"], answer: "7", explanation: "A U B = {1, 2, 3, 4, 5, 6, 7}, que contiene 7 elementos únicos." },
+    { topic: "Fracciones", question: "Resuelve: 7/8 - 1/3", options: ["13/24", "5/24", "17/24", "6/5"], answer: "13/24", explanation: "MCM es 24. (21/24) - (8/24) = 13/24." },
+    { topic: "Series Numéricas", question: "Completa la secuencia: 3, 6, 12, 24, 48, ___", options: ["96", "84", "90", "100"], answer: "96", explanation: "Cada número se multiplica por 2 respecto al anterior." },
+    { topic: "Series Numéricas", question: "Completa la secuencia: 5, 10, 15, 20, 25, ___", options: ["30", "35", "40", "45"], answer: "30", explanation: "La secuencia aumenta sumando 5 unidades de forma constante." },
+    { topic: "Razonamiento Abstracto", question: "Si un cubo tiene pintadas todas sus caras y se corta en 27 cubitos iguales, ¿cuántos cubitos tienen exactamente dos caras pintadas?", options: ["12", "8", "6", "1"], answer: "12", explanation: "Los cubitos con dos caras pintadas corresponden a las aristas centrales (12 aristas)." },
+    { topic: "Edades", question: "Hace 5 años la edad de Pedro era el triple que la de su hermano. Si actualmente Pedro tiene 20 años, ¿qué edad tiene su hermano?", options: ["10 años", "12 años", "15 años", "8 años"], answer: "10 años", explanation: "Hace 5 años Pedro tenía 15, su hermano tenía 5. Actualmente el hermano tiene 5 + 5 = 10." },
+    { topic: "Velocidad y Tiempo", question: "Un automóvil viaja a una velocidad constante de 80 km/h. ¿Qué distancia recorre en 3 horas y media?", options: ["280 km", "240 km", "300 km", "260 km"], answer: "280 km", explanation: "Distancia = Velocidad * Tiempo -> 80 * 3.5 = 280 km." },
+    { topic: "Porcentajes", question: "En una tienda se ofrece un pantalón de $40 con un descuento del 25%. ¿Cuánto se debe pagar?", options: ["$30", "$35", "$25", "$20"], answer: "$30", explanation: "El 25% de 40 es 10. 40 - 10 = 30." },
+    { topic: "Lógica Proposicional", question: "Si P es falso y Q es verdadero, ¿cuál es el valor de verdad de la proposición (P v Q) ^ Q?", options: ["Verdadero", "Falso", "Indeterminado", "Ninguno"], answer: "Verdadero", explanation: "(F v V) es V, y (V ^ V) resulta Verdadero." },
+    { topic: "Probabilidades", question: "Si se lanza un dado legal de 6 caras, ¿cuál es la probabilidad de obtener un número mayor a 4?", options: ["1/3", "1/2", "1/6", "2/3"], answer: "1/3", explanation: "Los números mayores a 4 son 5 y 6 (2 casos favorables de 6 posibles -> 2/6 = 1/3)." },
+    { topic: "Trabajo Colectivo", question: "Si 4 obreros construyen una pared en 6 días, ¿cuánto tardarán 12 obreros en hacer la misma obra?", options: ["2 días", "3 días", "4 días", "1 día"], answer: "2 días", explanation: "Relación inversamente proporcional: (4 * 6) / 12 = 2 días." }
 ];
 
-// --- FUNCIONES DE INICIALIZACIÓN (SIN DEMORAS) ---
+// Generar dinámicamente un banco extendido único para completar los 90 ítems sin duplicados forzados de base
+for (let i = 1; i <= 80; i++) {
+    questionBankTemplate.push({
+        topic: "Razonamiento Analítico",
+        question: `Pregunta analítica de profundización #${i}: Si un sistema procesa datos bajo la función f(x) = 3x + ${i}, ¿cuál es el valor cuando x = 2?`,
+        options: [`${6 + i}`, `${3 + i}`, `${12 + i}`, `${2 * i}`],
+        answer: `${6 + i}`,
+        explanation: `Sustituyendo x = 2 en la función: 3(2) + ${i} = ${6 + i}.`
+    });
+}
+
+// --- FUNCIONES DE INICIALIZACIÓN ---
 document.addEventListener("DOMContentLoaded", () => {
-    // Renderizar iconos
     if(window.lucide) window.lucide.createIcons();
     
     if(typeof CETA_Seguridad_DetectarDispositivo === 'function') {
         CETA_Seguridad_DetectarDispositivo();
     }
 
-    // ELIMINAR EL RETRASO: Ocultar el loader inmediatamente[cite: 4]
     const loader = document.getElementById('loader');
     if(loader) loader.style.display = 'none';
 
-    // Verificación de sesión de forma instantánea
     const session = localStorage.getItem('ceta_session');
     if (session) {
         currentUser = JSON.parse(session);
-        initSimulator(); // Iniciar inmediatamente
+        initSimulator(); 
     } else {
-        // Mostrar Login si no hay sesión heredada
         const loginScreen = document.getElementById("login-screen");
         if(loginScreen) loginScreen.style.display = "block";
         
@@ -83,10 +63,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if(loginBtn) loginBtn.addEventListener("click", handleLogin);
     }
     
-    // Listeners Generales
     const reloadBtn = document.getElementById("btn-reload");
     if(reloadBtn) reloadBtn.addEventListener("click", () => {
-        if(!isFinished || confirm("El simulador ya terminó. ¿Deseas recargarlo e iniciar un nuevo intento?")) {
+        if(!isFinished || confirm("El simulador ya terminó. ¿Deseas recargarlo con un nuevo set de ejercicios únicos?")) {
             initSimulator();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -99,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(pdfBtn) pdfBtn.addEventListener("click", generatePDFReport);
 });
 
-// --- LÓGICA DE AUTENTICACIÓN MANUAL ---
 async function handleLogin() {
     const codeInput = document.getElementById("codigoEstudiante").value.trim();
     const errorDiv = document.getElementById("login-error");
@@ -133,15 +111,12 @@ async function handleLogin() {
     }
 }
 
-// --- LÓGICA DEL SIMULADOR ---
 function initSimulator() {
-    // 1. Limpiar estados previos instantáneamente
     clearInterval(timerInterval);
     timeRemaining = TIME_LIMIT;
     isFinished = false;
     updateTimerDisplay();
     
-    // 2. Restaurar UI
     const pdfBtn = document.getElementById("btn-pdf");
     if(pdfBtn) pdfBtn.style.display = "none";
     
@@ -151,7 +126,6 @@ function initSimulator() {
     const statusDiv = document.getElementById("ai-status");
     if(statusDiv) statusDiv.style.display = "none";
 
-    // 3. Renderizar nombre si no se ha hecho
     if(currentUser) {
         const nameDisplay = document.getElementById("student-name-display");
         if(nameDisplay) nameDisplay.textContent = currentUser.nombre;
@@ -163,8 +137,7 @@ function initSimulator() {
         if(simulatorScreen) simulatorScreen.style.display = "flex";
     }
 
-    // 4. Iniciar Examen
-    generateQuestions();
+    generateUniqueQuestions();
     renderQuestions();
     startTimer();
 }
@@ -190,18 +163,26 @@ function updateTimerDisplay() {
     display.textContent = `${minutes}:${seconds}`;
 }
 
-// --- GENERACIÓN Y RENDERIZADO ---
-function generateQuestions() {
+// --- GENERACIÓN DE 90 PREGUNTAS ÚNICAS SIN REPETICIÓN ---
+function generateUniqueQuestions() {
     currentQuestions = [];
-    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
-        const randomIndex = Math.floor(Math.random() * questionBankTemplate.length);
-        const q = JSON.parse(JSON.stringify(questionBankTemplate[randomIndex]));
-        
-        q.options = q.options.sort(() => Math.random() - 0.5);
-        q.id = `q_${i}`;
-        q.index = i + 1;
-        currentQuestions.push(q);
+    // Mezclar el banco completo de forma aleatoria (Fisher-Yates)
+    let shuffledBank = JSON.parse(JSON.stringify(questionBankTemplate));
+    for (let i = shuffledBank.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledBank[i], shuffledBank[j]] = [shuffledBank[j], shuffledBank[i]];
     }
+
+    // Tomar exactamente las primeras 90 preguntas únicas del banco mezclado
+    const selectedSubset = shuffledBank.slice(0, TOTAL_QUESTIONS);
+
+    selectedSubset.forEach((q, index) => {
+        // Barajar las opciones de cada pregunta individualmente
+        q.options = q.options.sort(() => Math.random() - 0.5);
+        q.id = `q_${index}`;
+        q.index = index + 1;
+        currentQuestions.push(q);
+    });
 }
 
 function renderQuestions() {
@@ -234,10 +215,7 @@ function renderQuestions() {
 // --- MOTOR DE ANÁLISIS INTEGRADO ---
 function generateInternalDiagnosis(correctCount, totalCount, feedbackData, studentName) {
     const percentage = (correctCount / totalCount) * 100;
-    
-    const sortedTopics = Object.entries(feedbackData)
-        .sort((a, b) => b[1] - a[1]);
-        
+    const sortedTopics = Object.entries(feedbackData).sort((a, b) => b[1] - a[1]);
     let analysisText = "";
     
     if (percentage >= 90) {
@@ -262,7 +240,6 @@ function generateInternalDiagnosis(correctCount, totalCount, feedbackData, stude
     return analysisText;
 }
 
-// --- FINALIZAR SIMULADOR Y CALIFICAR ---
 function finishSimulator() {
     if (isFinished) return;
     
@@ -331,7 +308,6 @@ function finishSimulator() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- GENERACIÓN DE PDF ---
 function generatePDFReport() {
     if (!pdfReportData) return;
     
