@@ -21,7 +21,7 @@ for (let i = 4; i <= 25; i++) {
 }
 
 // ==========================================
-// PUNTO 2: BLOQUEO DE CÓDIGO FUENTE
+// PUNTO 2: BLOQUEO DE CÓDIGO FUENTE (INALTERADO)
 // ==========================================
 (function bloquearCodigoFuente() {
   document.addEventListener('contextmenu', function(e) {
@@ -53,115 +53,113 @@ for (let i = 4; i <= 25; i++) {
 })();
 
 // ==========================================
-// PUNTO 3: SEGURIDAD Y BIOMETRÍA DE HUELLA DACTILAR
+// VERIFICACIÓN DE SEGURIDAD: OPERACIÓN MATEMÁTICA EN MODAL
+// Suma o resta de dos cifras sin respuestas negativas
 // ==========================================
-let isMobileDevice = false;
-let generatedPcCode = "";
+let currentMathAnswer = 0;
 
-function CETA_Seguridad_DetectarDispositivo() {
-  isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-  CETA_Seguridad_RenderizarUI();
-}
+function CETA_GenerarOperacionMatematica() {
+  const num1 = Math.floor(Math.random() * 90) + 10; // Dos cifras (10 - 99)
+  const num2 = Math.floor(Math.random() * 90) + 10; // Dos cifras (10 - 99)
+  const esSuma = Math.random() < 0.5;
 
-function CETA_Seguridad_GenerarTokenPC() {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "";
-  for (let i = 0; i < 5; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  if (esSuma) {
+    currentMathAnswer = num1 + num2;
+    return `${num1} + ${num2}`;
+  } else {
+    // Asegurar que no existan respuestas negativas (num1 >= num2)
+    const mayor = Math.max(num1, num2);
+    const menor = Math.min(num1, num2);
+    currentMathAnswer = mayor - menor;
+    return `${mayor} - ${menor}`;
   }
-  return code;
 }
 
-function CETA_Seguridad_RenderizarUI() {
-  const container = document.getElementById('security-verification-container');
-  if (!container) return;
+function CETA_MostrarModalMatematico() {
+  return new Promise((resolve) => {
+    let modal = document.getElementById('math-security-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'math-security-modal';
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal-card" style="text-align: center; max-width: 420px;">
+          <div style="display:flex; justify-content:flex-end; margin-bottom:-10px;">
+            <button type="button" id="math-modal-close" style="background:none; border:none; cursor:pointer; color:var(--text-muted);"><i data-lucide="x" size="20"></i></button>
+          </div>
+          <div style="width: 56px; height: 56px; background: rgba(37,99,235,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; color: var(--primary);">
+            <i data-lucide="shield-check" size="28"></i>
+          </div>
+          <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">Verificación de seguridad</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Resuelve la operación para iniciar sesión.</p>
+          
+          <div style="background: var(--input-bg); border: 1px solid var(--border); border-radius: 16px; padding: 1.2rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem;">
+            <span id="math-problem-display" style="font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: 2px;"></span>
+            <button type="button" id="math-refresh-btn" title="Cambiar operación" style="background: none; border: none; cursor: pointer; color: var(--primary); padding: 8px;">
+              <i data-lucide="refresh-cw" size="20"></i>
+            </button>
+          </div>
 
-  if (isMobileDevice) {
-    container.innerHTML = `
-      <div class="security-box" style="border-color: #10b981; background: rgba(16, 185, 129, 0.1);">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <i data-lucide="fingerprint" size="28" style="color: #10b981;"></i>
-          <div style="text-align:left;">
-            <span style="font-size:0.8rem; font-weight:700; color:#34d399; display:block;">Sensor Biométrico</span>
-            <span style="font-size:0.75rem; color:#94a3b8;">Se activará la lectura de tu huella en el móvil</span>
+          <div class="input-group" style="text-align: left; margin-bottom: 1.2rem;">
+            <label class="input-label">¿Cuál es el resultado?</label>
+            <input type="number" id="mathAnswerInput" class="input-field" placeholder="Ingresa tu respuesta" style="text-align: center; font-size: 1.1rem; font-weight: 700;">
+          </div>
+
+          <div id="math-error-msg" style="color: #ef4444; font-size: 0.82rem; margin-bottom: 1rem; display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px; border-radius: 8px; font-weight: 600;"></div>
+
+          <div style="display: flex; gap: 10px;">
+            <button type="button" id="math-cancel-btn" style="flex: 1; padding: 12px; background: transparent; border: 1px solid var(--border); color: var(--text-muted); border-radius: 12px; font-weight: 700; cursor: pointer;">Cancelar</button>
+            <button type="button" id="math-submit-btn" style="flex: 1; padding: 12px; background: var(--primary); border: none; color: white; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.3);">Continuar</button>
           </div>
         </div>
-      </div>
-    `;
-  } else {
-    generatedPcCode = CETA_Seguridad_GenerarTokenPC();
-    container.innerHTML = `
-      <div class="security-box">
-        <span class="captcha-code" id="token-display">${generatedPcCode}</span>
-        <button type="button" onclick="CETA_Seguridad_RefrescarTokenPC()" style="background:none; border:none; cursor:pointer; color:var(--primary);">
-          <i data-lucide="refresh-cw" size="18"></i>
-        </button>
-      </div>
-      <div class="input-group">
-        <label class="input-label">Ingresa el Código Dinámico Generado</label>
-        <input type="text" id="pcTokenInput" class="input-field" placeholder="Verificación de seguridad" style="text-transform:uppercase;">
-      </div>
-    `;
-  }
-  if (window.lucide) lucide.createIcons();
-}
-
-function CETA_Seguridad_RefrescarTokenPC() {
-  generatedPcCode = CETA_Seguridad_GenerarTokenPC();
-  const elem = document.getElementById('token-display');
-  if (elem) elem.textContent = generatedPcCode;
-}
-
-// ACTIVACIÓN REAL DEL SENSOR DE HUELLA Y ALMACENAMIENTO DE SEGURIDAD
-async function CETA_Seguridad_ValidarHuellaMovil(studentCode) {
-  if (window.PublicKeyCredential) {
-    try {
-      const challenge = new Uint8Array(32);
-      window.crypto.getRandomValues(challenge);
-
-      // Opciones para activar el sensor biométrico nativo
-      const publicKeyCredentialRequestOptions = {
-        challenge: challenge,
-        timeout: 60000,
-        userVerification: "required"
-      };
-
-      // Si existe token registrado previamente en localStorage
-      const storedCredentialId = localStorage.getItem(`ceta_bio_${studentCode}`);
-
-      if (storedCredentialId) {
-        // Validación con sensor activo
-        const assertion = await navigator.credentials.get({
-          publicKey: publicKeyCredentialRequestOptions
-        });
-        return !!assertion;
-      } else {
-        // Primer registro biométrico con el sensor
-        const createOptions = {
-          challenge: challenge,
-          rp: { name: "CETA Preuniversitario", id: window.location.hostname || "localhost" },
-          user: {
-            id: Uint8Array.from(studentCode, c => c.charCodeAt(0)),
-            name: studentCode,
-            displayName: studentCode
-          },
-          pubKeyCredParams: [{ alg: -7, type: "public-key" }],
-          authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-          timeout: 60000
-        };
-
-        const newCredential = await navigator.credentials.create({ publicKey: createOptions });
-        if (newCredential) {
-          localStorage.setItem(`ceta_bio_${studentCode}`, newCredential.id);
-          return true;
-        }
-      }
-    } catch (e) {
-      console.warn("Sensor biométrico nativo cancelado o no disponible:", e);
-      return confirm("CETA Preuniversitario: Escanea tu huella dactilar para autenticar el ingreso.");
+      `;
+      document.body.appendChild(modal);
     }
-  }
-  return confirm("Confirma tu huella dactilar mediante el lector de tu dispositivo.");
+
+    const problemDisplay = document.getElementById('math-problem-display');
+    const answerInput = document.getElementById('mathAnswerInput');
+    const errorMsg = document.getElementById('math-error-msg');
+    const submitBtn = document.getElementById('math-submit-btn');
+    const cancelBtn = document.getElementById('math-cancel-btn');
+    const closeBtn = document.getElementById('math-modal-close');
+    const refreshBtn = document.getElementById('math-refresh-btn');
+
+    function actualizarProblema() {
+      problemDisplay.textContent = CETA_GenerarOperacionMatematica() + " = ?";
+      answerInput.value = "";
+      errorMsg.style.display = 'none';
+      answerInput.focus();
+    }
+
+    actualizarProblema();
+    modal.classList.add('active');
+    if (window.lucide) lucide.createIcons();
+
+    refreshBtn.onclick = actualizarProblema;
+
+    const cerrarModal = (resultado) => {
+      modal.classList.remove('active');
+      resolve(resultado);
+    };
+
+    cancelBtn.onclick = () => cerrarModal(false);
+    closeBtn.onclick = () => cerrarModal(false);
+
+    submitBtn.onclick = () => {
+      const val = parseInt(answerInput.value.trim(), 10);
+      if (isNaN(val) || val !== currentMathAnswer) {
+        errorMsg.textContent = "Respuesta incorrecta. Inténtalo de nuevo.";
+        errorMsg.style.display = 'block';
+        answerInput.focus();
+        return;
+      }
+      cerrarModal(true);
+    };
+
+    answerInput.onkeypress = (e) => {
+      if (e.key === 'Enter') submitBtn.click();
+    };
+  });
 }
 
 async function CETA_ValidarAcceso(codigoIngresado) {
@@ -175,18 +173,10 @@ async function CETA_ValidarAcceso(codigoIngresado) {
     return { ok: false, msg: "Tu acceso ha sido deshabilitado. Contacta con administración de CETA Preuniversitario." };
   }
 
-  if (isMobileDevice) {
-    const huellaValida = await CETA_Seguridad_ValidarHuellaMovil(user.codigo);
-    if (!huellaValida) {
-      return { ok: false, msg: "Lectura de huella dactilar no reconocida o cancelada." };
-    }
-  } else {
-    const pcTokenInput = document.getElementById('pcTokenInput');
-    const tokenUsuario = pcTokenInput ? pcTokenInput.value.trim().toUpperCase() : "";
-    if (tokenUsuario !== generatedPcCode) {
-      CETA_Seguridad_RefrescarTokenPC();
-      return { ok: false, msg: "Código dinámico de seguridad incorrecto. Inténtalo de nuevo." };
-    }
+  // Activar verificación por operación matemática emergente
+  const verificacionExitosa = await CETA_MostrarModalMatematico();
+  if (!verificacionExitosa) {
+    return { ok: false, msg: "Verificación de seguridad cancelada o incorrecta." };
   }
 
   return { ok: true, user: user };
