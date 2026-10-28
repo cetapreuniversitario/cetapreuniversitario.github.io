@@ -1,6 +1,6 @@
 // --- VARIABLES GLOBALES ---
-const TOTAL_QUESTIONS = 90;
-const TIME_LIMIT = 90 * 60; // 90 minutos
+const TOTAL_QUESTIONS = 40;
+const TIME_LIMIT = 40 * 60; // 40 minutos
 let timeRemaining = TIME_LIMIT;
 let timerInterval;
 let currentQuestions = [];
@@ -29,7 +29,7 @@ const questionBankTemplate = [
     { topic: "Trabajo Colectivo", question: "Si 4 obreros construyen una pared en 6 días, ¿cuánto tardarán 12 obreros en hacer la misma obra?", options: ["2 días", "3 días", "4 días", "1 día"], answer: "2 días", explanation: "Relación inversamente proporcional: (4 * 6) / 12 = 2 días." }
 ];
 
-// Generar dinámicamente un banco extendido único para completar los 90 ítems sin duplicados forzados de base
+// Generar dinámicamente un banco extendido único para completar el stock sin duplicados
 for (let i = 1; i <= 80; i++) {
     questionBankTemplate.push({
         topic: "Razonamiento Analítico",
@@ -163,21 +163,19 @@ function updateTimerDisplay() {
     display.textContent = `${minutes}:${seconds}`;
 }
 
-// --- GENERACIÓN DE 90 PREGUNTAS ÚNICAS SIN REPETICIÓN ---
+// --- GENERACIÓN DE 40 PREGUNTAS ÚNICAS SIN REPETICIÓN ---
 function generateUniqueQuestions() {
     currentQuestions = [];
-    // Mezclar el banco completo de forma aleatoria (Fisher-Yates)
     let shuffledBank = JSON.parse(JSON.stringify(questionBankTemplate));
     for (let i = shuffledBank.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffledBank[i], shuffledBank[j]] = [shuffledBank[j], shuffledBank[i]];
     }
 
-    // Tomar exactamente las primeras 90 preguntas únicas del banco mezclado
+    // Tomar exactamente las primeras 40 preguntas únicas del banco mezclado
     const selectedSubset = shuffledBank.slice(0, TOTAL_QUESTIONS);
 
     selectedSubset.forEach((q, index) => {
-        // Barajar las opciones de cada pregunta individualmente
         q.options = q.options.sort(() => Math.random() - 0.5);
         q.id = `q_${index}`;
         q.index = index + 1;
@@ -296,7 +294,7 @@ function finishSimulator() {
     statusDiv.style.display = "block";
     
     const calificacionBase10 = ((globalCorrectCount / TOTAL_QUESTIONS) * 10).toFixed(2);
-    document.getElementById("ai-score-display").textContent = `Calificación Final: ${calificacionBase10} / 10.00`;
+    document.getElementById("ai-score-display").textContent = `Calificación Final: ${globalCorrectCount} / 40 Puntos (${calificacionBase10} / 10.00)`;
     
     const feedbackDiv = document.getElementById("ai-feedback-display");
     const userName = currentUser ? currentUser.nombre.split(' ')[0] : "Estudiante";
@@ -325,7 +323,7 @@ function generatePDFReport() {
     doc.text(`Código: ${codigo}`, 14, 34);
     
     const calificacionBase10 = ((globalCorrectCount / TOTAL_QUESTIONS) * 10).toFixed(2);
-    doc.text(`Calificación Final: ${calificacionBase10} / 10.00 (${globalCorrectCount} aciertos)`, 14, 40);
+    doc.text(`Calificación Final: ${globalCorrectCount} / 40 Puntos (${calificacionBase10} / 10.00)`, 14, 40);
     
     doc.setFontSize(10);
     doc.setTextColor(0, 51, 153);
