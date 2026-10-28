@@ -30,6 +30,20 @@
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: var(--text-main);
             min-height: 100vh;
+            
+            /* BLOQUEO DE SELECCIÓN DE TEXTO */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Permitir selección solo en inputs (si en el futuro se agregan) */
+        input, textarea {
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+            user-select: auto;
         }
 
         #loader {
@@ -419,6 +433,86 @@
 
     <!-- SCRIPTS INTEGRADOS -->
     <script>
+        // ==========================================
+        // BLOQUEOS DE SEGURIDAD (TECLADO Y MOUSE)
+        // ==========================================
+        
+        // 1. Bloquear el clic derecho (Menú contextual)
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // 2. Bloquear selección de texto (arrastrando el mouse)
+        document.addEventListener('selectstart', function(e) {
+            if (e.target.nodeName !== 'INPUT' && e.target.nodeName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+
+        // 3. Bloquear el arrastre de elementos
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+        });
+
+        // 4. Bloquear atajos de teclado peligrosos
+        document.addEventListener('keydown', function(e) {
+            // F12 (Abrir DevTools)
+            if (e.key === 'F12' || e.keyCode === 123) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Ctrl+Shift+I / Ctrl+Shift+J / Ctrl+Shift+C (DevTools)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Ctrl+U (Ver código fuente)
+            if (e.ctrlKey && (e.key === 'U' || e.key === 'u')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Ctrl+S (Guardar página)
+            if (e.ctrlKey && (e.key === 'S' || e.key === 's')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Ctrl+A (Seleccionar todo) - Permitir solo en inputs
+            if (e.ctrlKey && (e.key === 'A' || e.key === 'a')) {
+                if (e.target.nodeName !== 'INPUT' && e.target.nodeName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+
+            // Ctrl+C / Ctrl+X (Copiar / Cortar) - Permitir solo en inputs
+            if (e.ctrlKey && (e.key === 'C' || e.key === 'c' || e.key === 'X' || e.key === 'x')) {
+                if (e.target.nodeName !== 'INPUT' && e.target.nodeName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+
+            // Ctrl+Shift+S (Guardar como)
+            if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Ctrl+P (Imprimir)
+            if (e.ctrlKey && (e.key === 'P' || e.key === 'p')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // ==========================================
+        // LÓGICA DEL SIMULADOR Y TEMPORIZADOR
+        // ==========================================
+
         const TOTAL_QUESTIONS = 40;
         const TIME_LIMIT = 40 * 60; // 40 minutos de examen
         // 25 horas, 20 minutos y 59 segundos en milisegundos
