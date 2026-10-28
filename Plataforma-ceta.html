@@ -737,27 +737,23 @@
 
     @media (max-width: 1024px) {
       #login-screen {
-        flex-direction: column;
+        display: block; /* Oculta el panel izquierdo y deja solo el contenedor derecho */
         overflow-y: auto;
       }
       .login-left-pane {
-        padding: 2.5rem 1.5rem;
-        min-height: 240px;
-        flex: none;
-      }
-      .login-left-content h1 {
-        font-size: 1.8rem;
-      }
-      .login-left-content p {
-        font-size: 0.95rem;
-        margin-bottom: 1rem;
+        display: none !important;
       }
       .login-right-pane {
+        width: 100%;
+        min-height: 100vh;
         padding: 1.5rem;
-        flex: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .login-card {
-        padding: 2rem 1.25rem;
+        max-width: 100%;
+        padding: 2.2rem 1.5rem;
       }
       .sidebar {
         left: -280px;
@@ -816,7 +812,7 @@
     <i data-lucide="moon" id="theme-icon" size="22"></i>
   </button>
 
-  <!-- Login con Diseño Dividido (Split-Screen) -->
+  <!-- Login con Diseño Dividido (Split-Screen en PC, solo contenedor derecho en Móvil) -->
   <div id="login-screen">
     <div class="login-left-pane">
       <div style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem;">
@@ -827,7 +823,6 @@
         <h1>Conecta con <span>oportunidades</span> para construir tu futuro</h1>
         <p>Accede a tu cuenta y participa en nuestra plataforma académica pensada para impulsar el talento y garantizar tu ingreso a la educación superior.</p>
       </div>
-      
     </div>
 
     <div class="login-right-pane">
@@ -849,7 +844,7 @@
           <i data-lucide="arrow-right" size="18"></i>
         </button>
 
-        <!-- FOOTER DENTRO DE LA TARJETA / PANTALLA -->
+        <!-- FOOTER DENTRO DE LA TARJETA -->
         <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
           <span>Plataforma Académica Oficial - CETA Preuniversitario</span>
         </div>
