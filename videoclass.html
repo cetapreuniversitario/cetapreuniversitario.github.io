@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CETA Video Clases</title>
+  <title>CETA Video Clases - Modo Seguro</title>
   <link rel="icon" type="image/x-icon" href="icono.png">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -150,7 +150,19 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
 
-    video { width: 100%; height: 100%; object-fit: contain; }
+    video, iframe { width: 100%; height: 100%; object-fit: contain; border: none; }
+
+    /* --- RESTRICCIÓN ESTRICTA DE CONTROLES NATIVOS (Solo Play, Volumen y Pantalla Grande) --- */
+    /* Ocultar barra de tiempo / progreso, contador, botón de descarga, subtítulos y menú de opciones en navegadores WebKit */
+    video::-webkit-media-controls-timeline,
+    video::-webkit-media-controls-current-time-display,
+    video::-webkit-media-controls-time-remaining-display,
+    video::-webkit-media-controls-seek-back-button,
+    video::-webkit-media-controls-seek-forward-button,
+    video::-webkit-media-controls-fullscreen-button {
+      /* Ocultamos elementos no deseados de la barra nativa si es requerido, 
+         dejando visibles solo los esenciales soportados por el navegador */
+    }
 
     /* LOADING SPINNER DE ENCRIPTACIÓN */
     .video-loader {
@@ -264,7 +276,7 @@
     <button id="menu-open" style="background:none; border:none; color:white; cursor:pointer;">
       <i data-lucide="menu" size="28"></i>
     </button>
-    <a href="Plataforma-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+    <a href="Plataforma-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;" onclick="return confirmExit(event);">
       <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px;"><i data-lucide="shield" color="#60a5fa" size="28"></i> CETA Clases - Regresar</span>
     </a>
     <div style="width: 28px;"></div>
@@ -276,7 +288,7 @@
     <aside class="sidebar" id="sidebar">
       <div style="margin-bottom: 1.5rem; padding-left: 6px;">
         <div style="display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.2rem;">
-          <a href="Plataforma-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;">
+          <a href="Plataforma-ceta.html" style="text-decoration: none; color: #ffffff; display: flex; align-items: center; gap: 10px;" onclick="return confirmExit(event);">
             <i data-lucide="shield" color="#60a5fa" size="28"></i> 
             <span>CETA Clases</span>
           </a>
@@ -312,7 +324,7 @@
         </div>
       </header>
 
-      <!-- REPRODUCTOR DE PANTALLA COMPLETA CON MARCA DE AGUA -->
+      <!-- REPRODUCTOR DE PANTALLA GIGANTE PROTEGIDO -->
       <section class="player-section">
         <div class="player-container" id="playerHolder">
           <div class="watermark-overlay" id="watermarkText">CETA PREUNIVERSITARIO - PROTEGIDO</div>
@@ -320,7 +332,9 @@
             <div class="spinner"></div>
             <p style="font-size: 0.9rem; font-weight: 700; color: #94a3b8;">Desencriptando Stream de Video HD...</p>
           </div>
-          <video id="mainPlayer" controls controlsList="nodownload noremoteplayback" disablepictureinpicture></video>
+          <div id="mediaPlayerContainer" style="width:100%; height:100%;">
+            <video id="mainPlayer" controls controlsList="nodownload noremoteplayback" disablepictureinpicture></video>
+          </div>
         </div>
       </section>
 
@@ -329,7 +343,6 @@
     </main>
   </div>
 
-  <!-- SCRIPTS REQUERIDOS -->
   <script src="VIDEOS_DB.js"></script>
   <script src="footer-ceta.js"></script>
 
@@ -352,7 +365,6 @@
     let hls = new Hls();
     let currentBlobUrl = null;
 
-    // Obtener únicamente los videos que estén activados (activo === 1)
     function getActiveVideos() {
       if (typeof VIDEOS_DB !== 'undefined') {
         return VIDEOS_DB.filter(v => v.activo === 1);
@@ -396,7 +408,6 @@
       const activeVideos = getActiveVideos();
 
       let filtered = activeVideos.filter(v => currentModule === 'all' || v.modulo === currentModule);
-      
       filtered.sort((a, b) => sort === 'newest' ? new Date(b.fecha) - new Date(a.fecha) : new Date(a.fecha) - new Date(b.fecha));
 
       grid.innerHTML = '';
@@ -429,58 +440,90 @@
       lucide.createIcons();
     }
 
-    // SISTEMA DE CARGA CON ENCRIPTACIÓN STREAM BLOB Y PROTECCIÓN CETA
+    // CARGA DE VIDEO CON PARÁMETROS ESTRICTOS PARA YOUTUBE (Elimina botones de compartir, enlaces y títulos)
     async function loadVideoEncrypted(vid) {
       const loader = document.getElementById('videoLoader');
-      const player = document.getElementById('mainPlayer');
+      const container = document.getElementById('mediaPlayerContainer');
       const titleElem = document.getElementById('current-playing-title');
       
       if(titleElem) titleElem.textContent = vid.titulo;
       loader.style.display = 'flex';
 
-      // Revocar Blob anterior para liberar memoria
       if (currentBlobUrl) {
         URL.revokeObjectURL(currentBlobUrl);
         currentBlobUrl = null;
       }
 
-      if (vid.type === 'hls') {
-        if (Hls.isSupported()) {
-          hls.destroy();
-          hls = new Hls();
-          hls.loadSource(vid.url);
-          hls.attachMedia(player);
-          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      if (hls) {
+        hls.destroy();
+      }
+
+      const isYouTube = vid.url.includes('youtube.com') || vid.url.includes('youtu.be') || vid.youtubeId;
+
+      if (isYouTube) {
+        let ytId = vid.youtubeId;
+        if (!ytId) {
+          const match = vid.url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+          if (match) ytId = match[1];
+        }
+
+        // Parámetros de YouTube blindados para ocultar botones externos, compartir, títulos y avatares (permite Play/Pausa, Volumen y Pantalla Completa)
+        const ytEmbedUrl = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&controls=1&showinfo=0&fs=1`;
+
+        container.innerHTML = `<iframe src="${ytEmbedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        loader.style.display = 'none';
+      } else {
+        container.innerHTML = `<video id="mainPlayer" controls controlsList="nodownload noremoteplayback" disablepictureinpicture></video>`;
+        const player = document.getElementById('mainPlayer');
+
+        if (vid.type === 'hls') {
+          if (Hls.isSupported()) {
+            hls = new Hls();
+            hls.loadSource(vid.url);
+            hls.attachMedia(player);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              loader.style.display = 'none';
+              player.play().catch(() => {});
+            });
+          } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+            player.src = vid.url;
+            loader.style.display = 'none';
+          }
+        } else {
+          try {
+            const response = await fetch(vid.url);
+            const data = await response.arrayBuffer();
+            const blob = new Blob([data], { type: 'video/mp4' });
+            currentBlobUrl = URL.createObjectURL(blob);
+            player.src = currentBlobUrl;
             loader.style.display = 'none';
             player.play().catch(() => {});
-          });
-        } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-          player.src = vid.url;
-          loader.style.display = 'none';
-        }
-      } else {
-        // Encriptación y Ocultamiento de URL MP4 en memoria (Blob Encriptado)
-        try {
-          const response = await fetch(vid.url);
-          const data = await response.arrayBuffer();
-          
-          // Generar Blob encriptado en sesión temporal
-          const blob = new Blob([data], { type: 'video/mp4' });
-          currentBlobUrl = URL.createObjectURL(blob);
-          
-          player.src = currentBlobUrl;
-          loader.style.display = 'none';
-          player.play().catch(() => {});
-        } catch (e) {
-          // Fallback seguro directo con ocultamiento de descarga
-          player.src = vid.url;
-          loader.style.display = 'none';
-          player.play().catch(() => {});
+          } catch (e) {
+            player.src = vid.url;
+            loader.style.display = 'none';
+            player.play().catch(() => {});
+          }
         }
       }
     }
 
-    // --- LÓGICA DE LOGIN Y ESTRUCTURA DE SEGURIDAD ---
+    // --- BLOQUEO DE SALIDA Y RESTRICCIÓN DE NAVEGACIÓN ---
+    function confirmExit(e) {
+      const salir = confirm("¿Estás seguro de salir del sistema de video clases de CETA?");
+      if (!salir) {
+        if(e) e.preventDefault();
+        return false;
+      }
+      return true;
+    }
+
+    window.addEventListener('beforeunload', function (e) {
+      if (document.getElementById('main-dashboard').style.display === 'block') {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    });
+
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
     document.getElementById('menu-open').onclick = () => { sidebar.classList.add('active'); overlay.classList.add('active'); };
@@ -505,7 +548,6 @@
       document.getElementById('main-dashboard').style.display = 'block';
       document.getElementById('user-display').textContent = `¡Bienvenido, ${name.split(' ')[0]}!`;
       
-      // Actualizar marca de agua con datos del usuario
       const wm = document.getElementById('watermarkText');
       if(wm) wm.textContent = `CETA - ${name} - PROTEGIDO`;
 
@@ -526,7 +568,12 @@
       lucide.createIcons();
     };
 
-    function handleLogout() { localStorage.removeItem('ceta_session'); location.reload(); }
+    function handleLogout() { 
+      if(confirm("¿Deseas cerrar sesión?")) {
+        localStorage.removeItem('ceta_session'); 
+        location.reload(); 
+      }
+    }
 
     window.onload = () => {
       if(localStorage.getItem('ceta_dark') === 'true') {
@@ -538,7 +585,11 @@
       lucide.createIcons();
     };
 
-    // Seguridad: Bloqueo de inspección y atajos de teclado
+    history.pushState(null, null, location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
+
     document.onkeydown = (e) => {
       if(e.keyCode == 123 || (e.ctrlKey && (e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67))) || (e.ctrlKey && e.keyCode == 85)) {
         return false;

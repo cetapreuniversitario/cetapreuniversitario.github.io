@@ -29,6 +29,39 @@ const VIDEOS_DB = [
     activo: 1 
   },
   { 
+    id: 103, 
+    modulo: "R. Lógico", 
+    fecha: "2026-10-24", 
+    duracion: "4 min",
+    titulo: "PROBLEMAS DE ORDEN DE INFORMACIÓN", 
+    url: "https://www.youtube.com/watch?v=fNEVu5rbYNk", 
+    youtubeId: "fNEVu5rbYNk", 
+    type: "mp4",
+    activo: 1 
+  },
+  { 
+    id: 104, 
+    modulo: "R. Lógico", 
+    fecha: "2026-10-24", 
+    duracion: "4 min",
+    titulo: "RAZONES Y PROPORCIONES Ejercicio 1 Super facil - Para principiantes", 
+    url: "http://youtube.com/watch?v=3eYwW4sDlxM", 
+    youtubeId: "3eYwW4sDlxM", 
+    type: "mp4",
+    activo: 1 
+  },
+  { 
+    id: 105, 
+    modulo: "R. Lógico", 
+    fecha: "2026-10-24", 
+    duracion: "4 min",
+    titulo: "MENOR QUE Y MAYOR QUE Super facil Para principiantes", 
+    url: "", 
+    youtubeId: "0B05Uy0Cj-c", 
+    type: "mp4",
+    activo: 1 
+  },
+  { 
     id: 1, 
     modulo: "Matemáticas", 
     fecha: "2026-04-15", 
