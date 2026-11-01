@@ -62,6 +62,39 @@ const VIDEOS_DB = [
     activo: 1 
   },
   { 
+    id: 106, 
+    modulo: "R. Lógico", 
+    fecha: "2026-10-31", 
+    duracion: "4 min",
+    titulo: "PLANTEAR Y RESOLVER ECUACIONES LINEALES", 
+    url: "https://www.youtube.com/watch?v=NAIjmDMNF10", 
+    youtubeId: "NAIjmDMNF10", 
+    type: "mp4",
+    activo: 1 
+  },
+  { 
+    id: 107, 
+    modulo: "R. Lógico", 
+    fecha: "2026-10-31", 
+    duracion: "45 min",
+    titulo: "PLANTEO DE ECUACIONES PROBLEMAS RESUELTOS RAZONAMIENTO MATEMÁTICO", 
+    url: "https://www.youtube.com/watch?v=1b4_4Y0UP8Q", 
+    youtubeId: "1b4_4Y0UP8Q", 
+    type: "mp4",
+    activo: 1 
+  },
+  { 
+    id: 108, 
+    modulo: "R. Lógico", 
+    fecha: "2026-10-24", 
+    duracion: "19 min",
+    titulo: "Solución de problemas con Ecuaciones de Primer Grado ", 
+    url: "https://www.youtube.com/watch?v=3HCTOOQVbu0&list=PLeySRPnY35dGx5FUtAikZ6UUuHQLaI9_E&index=1", 
+    youtubeId: "3HCTOOQVbu0&list=PLeySRPnY35dGx5FUtAikZ6UUuHQLaI9_E&index=1", 
+    type: "mp4",
+    activo: 1 
+  },
+  { 
     id: 1, 
     modulo: "Matemáticas", 
     fecha: "2026-04-15", 
