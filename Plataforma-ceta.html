@@ -737,7 +737,7 @@
 
     @media (max-width: 1024px) {
       #login-screen {
-        display: block; /* Oculta el panel izquierdo y deja solo el contenedor derecho */
+        display: block;
         overflow-y: auto;
       }
       .login-left-pane {
@@ -812,7 +812,7 @@
     <i data-lucide="moon" id="theme-icon" size="22"></i>
   </button>
 
-  <!-- Login con Diseño Dividido (Split-Screen en PC, solo contenedor derecho en Móvil) -->
+  <!-- Login con Diseño Dividido -->
   <div id="login-screen">
     <div class="login-left-pane">
       <div style="display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem;">
@@ -844,7 +844,6 @@
           <i data-lucide="arrow-right" size="18"></i>
         </button>
 
-        <!-- FOOTER DENTRO DE LA TARJETA -->
         <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem;">
           <span>Plataforma Académica Oficial - CETA Preuniversitario</span>
         </div>
@@ -905,13 +904,12 @@
           </div>
 
           <div class="header-actions">
-            <!-- GLOBO DE NOTIFICACIONES DE TAREA -->
-            <button class="notif-btn" id="notif-bell" title="Ver Notificaciones de Tareas">
+            <!-- Botón de la campanita vinculado a las notificaciones verbales / externas -->
+            <button class="notif-btn" id="notif-bell" title="Ver Notificaciones">
               <i data-lucide="bell" size="20"></i>
               <span class="notif-badge"></span>
             </button>
 
-            <!-- PÍLDORA DE USUARIO -->
             <div class="user-pill-container">
               <div class="user-pill" id="user-pill-btn">
                 <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">
@@ -976,6 +974,13 @@
                   <td>Sábado</td>
                   <td>11:00 AM - 15:00 PM</td>
                   <td>Presencial-Principal</td>
+                  <td><span class="status-pill status-active">Módulo concluido con éxito</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Razonamiento Verbal</strong></td>
+                  <td>Sábado</td>
+                  <td>11:00 AM - 15:00 PM</td>
+                  <td>Presencial-Principal</td>
                   <td><span class="status-pill status-active">Activado</span></td>
                 </tr>
               </tbody>
@@ -1002,13 +1007,15 @@
             <a href="simulador_quimica3.html" class="sim-link">Simulador de Química 3<i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
+          <!-- MÓDULO R. VERBAL CON APARTADO DE NOTIFICACIONES EXTERNAS -->
           <div class="course-card" id="card-verbal">
             <div class="course-badge" style="background: var(--accent-verbal);"><i data-lucide="languages"></i></div>
             <h3>R. Verbal</h3>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Comprensión y Analogías.</p>
-            <a href="simulador-razonamiento-verbal.html" class="sim-link">Simulador Verbal 1<i data-lucide="chevron-right" size="14"></i></a>
-            <a href="simulador_r_verbal2.html" class="sim-link">Simulador Verbal 2<i data-lucide="chevron-right" size="14"></i></a>
-            <a href="simulador_r_verbal3.html" class="sim-link">Simulador Verbal 3<i data-lucide="chevron-right" size="14"></i></a>
+            <a href="simulador_verbal.html" target="_blank" class="sim-link">Acceder al Simulador de R. Verbal <i data-lucide="chevron-right" size="14"></i></a>
+            <a onclick="openVerbalModal()" class="sim-link" style="background: rgba(217,119,6,0.12); border-color: rgba(217,119,6,0.3); color: var(--accent-verbal); margin-top: 8px;">
+              <span>Notificaciones Verbales</span> <i data-lucide="bell" size="14"></i>
+            </a>
           </div>
 
           <div class="course-card" id="card-abstracto">
@@ -1019,14 +1026,23 @@
             <a href="#" class="sim-link">Matrices Espaciales <i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
+          <!-- MÓDULO R. LÓGICO: Notificación de Concluido + Simulador Conservado -->
           <div class="course-card" id="card-logico">
             <div class="course-badge" style="background: var(--accent-logic);"><i data-lucide="brain"></i></div>
             <h3>R. Lógico</h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Porcentajes, Series y Deducción.</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">Porcentajes, Series y Deducción.</p>
+            
+            <!-- Notificación de Módulo Concluido con Éxito -->
+            <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="check-circle-2" size="16" style="color: #10b981; flex-shrink: 0;"></i>
+              <span style="font-size: 0.78rem; font-weight: 700; color: #10b981;">Módulo concluido con éxito</span>
+            </div>
+
+            <!-- Apartado del simulador conservado -->
             <a href="simulador_lógica.html" class="sim-link" target="_blank">
               <span>Acceder al Simulador de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
             </a>
-            <a onclick="openNotifModal()" class="sim-link" style="background: rgba(219,39,119,0.12); border-color: rgba(219,39,119,0.3); color: var(--accent-logic); margin-top: 8px;">
+            <a onclick="openVerbalModal()" class="sim-link" style="background: rgba(219,39,119,0.12); border-color: rgba(219,39,119,0.3); color: var(--accent-logic); margin-top: 8px;">
               <span>Tarea: Ejercicios Pág 25 - 34</span> <i data-lucide="book-open" size="14"></i>
             </a>
           </div>
@@ -1044,30 +1060,18 @@
     </div>
   </div>
 
-  <!-- MODAL DE NOTIFICACIONES -->
-  <div class="modal" id="notif-modal">
+  <!-- MODAL DE NOTIFICACIONES VINCULADO AL JS EXTERNO -->
+  <div class="modal" id="verbal-notif-modal">
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title">
-          <i data-lucide="bell" style="color: #ef4444;"></i>
-          <span>Notificaciones de Tareas</span>
+          <i data-lucide="bell" style="color: #d97706;"></i>
+          <span>Notificaciones Académicas</span>
         </div>
-        <button class="btn-close" id="close-notif-modal"><i data-lucide="x" size="20"></i></button>
+        <button class="btn-close" id="close-verbal-modal"><i data-lucide="x" size="20"></i></button>
       </div>
-
-      <div class="modal-body-scroll">
-        <div style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; padding: 1.25rem; margin-top: 0.5rem; margin-bottom: 1rem;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span style="background: #ef4444; color: white; font-size: 0.7rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;">
-              Tarea de esta semana
-            </span>
-            <span style="font-size: 0.8rem; color: var(--text-main); font-weight: 600;">Entrega: Próximo Sábado</span>
-          </div>
-          <h4 style="font-size: 1rem; font-weight: 700; color: #ef4444; margin-bottom: 6px;">Módulo de Razonamiento Lógico</h4>
-          <p style="font-size: 0.9rem; color: var(--text-main); line-height: 1.45;">
-            <strong>Enunciado de Tarea:</strong> Resolver los ejercicios propuestos en clases correspondientes a las páginas de la <strong>25 a la 34</strong> del módulo CETA para la siguiente sesión presencial.
-          </p>
-        </div>
+      <div class="modal-body-scroll" id="verbal-notifications-container">
+        <!-- Contenido inyectado dinámicamente desde notificaciones-verbal.js -->
       </div>
     </div>
   </div>
@@ -1099,6 +1103,7 @@
   <script src="config-secciones.js"></script>
   <script src="estudiantes-db.js"></script>
   <script src="footer-ceta.js"></script>
+  <script src="notificaciones-verbal.js"></script> <!-- Archivo JS externo vinculado -->
 
   <script>
     const themeBtn = document.getElementById('theme-toggle-btn');
@@ -1205,8 +1210,8 @@
     const closeModal = document.getElementById('close-modal');
 
     const notifBell = document.getElementById('notif-bell');
-    const notifModal = document.getElementById('notif-modal');
-    const closeNotifModal = document.getElementById('close-notif-modal');
+    const verbalNotifModal = document.getElementById('verbal-notif-modal');
+    const closeVerbalModalBtn = document.getElementById('close-verbal-modal');
 
     function closeSidebarMobile() {
       sidebar.classList.remove('active');
@@ -1219,7 +1224,7 @@
       sidebar.classList.remove('active'); 
       overlay.classList.remove('active'); 
       scheduleModal.classList.remove('active'); 
-      notifModal.classList.remove('active');
+      verbalNotifModal.classList.remove('active');
     }
 
     overlay.onclick = closeAllModals;
@@ -1232,27 +1237,29 @@
       lucide.createIcons();
     };
 
+    // Vincular enlace de la barra lateral de Tareas al modal externo de notificaciones
     tasksToggle.onclick = (e) => {
       e.preventDefault();
-      closeAllModals();
-      notifModal.classList.add('active');
-      overlay.classList.add('active');
-      lucide.createIcons();
+      openVerbalModal();
     };
 
+    // Vincular la campanita del header para abrir el modal con el script JS
     notifBell.onclick = () => {
-      openNotifModal();
+      openVerbalModal();
     };
 
-    function openNotifModal() {
+    function openVerbalModal() {
       closeAllModals();
-      notifModal.classList.add('active');
+      if (typeof cargarNotificacionesVerbal === 'function') {
+        cargarNotificacionesVerbal();
+      }
+      verbalNotifModal.classList.add('active');
       overlay.classList.add('active');
       lucide.createIcons();
     }
 
-    closeModal.onclick = () => { scheduleModal.classList.remove('active'); overlay.classList.remove('active'); };
-    closeNotifModal.onclick = () => { notifModal.classList.remove('active'); overlay.classList.remove('active'); };
+    closeModal.onclick = () => { scheduleModal.classList.remove('icon'); scheduleModal.classList.remove('active'); overlay.classList.remove('active'); };
+    closeVerbalModalBtn.onclick = () => { verbalNotifModal.classList.remove('active'); overlay.classList.remove('active'); };
 
     window.onload = () => {
       const savedTheme = localStorage.getItem('ceta_theme');
