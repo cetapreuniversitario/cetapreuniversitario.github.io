@@ -1,0 +1,11 @@
+[
+  {
+    "codigo": "EST-001",
+    "nombre": "Ejemplo Estudiante",
+    "modulo": "Razonamiento Lógico",
+    "aciertos": 38,
+    "totalPreguntas": 40,
+    "calificacion10": "9.50",
+    "fechaHora": "2026-11-08T10:30:00.000Z"
+  }
+]

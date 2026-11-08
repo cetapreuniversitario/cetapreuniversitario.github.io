@@ -1,0 +1,45 @@
+name: Generar Reporte Acumulado Diario en PDF
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Ejecución automática todos los días a las 00:00 UTC
+  workflow_dispatch:     # Permite presionar el botón "Run workflow" manualmente en GitHub Actions
+
+jobs:
+  construir-pdf-diario:
+    runs-on: ubuntu-latest
+    
+    # Permisos indispensables para permitir que el bot edite y guarde archivos en el repositorio
+    permissions:
+      contents: write
+
+    steps:
+      - name: Paso 1 - Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Paso 2 - Configurar Node.js (Versión 18)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Paso 3 - Instalar la librería PDFKit
+        run: npm install pdfkit
+
+      - name: Paso 4 - Ejecutar el script generador de PDF
+        run: node generar_pdf.js
+
+      - name: Paso 5 - Verificar si hay cambios e incorporarlos al repositorio
+        run: |
+          git config --global user.name "CETA Bot Automático"
+          git config --global user.email "bot@ceta.edu.ec"
+          
+          # Verificar si la carpeta reportes tiene archivos nuevos o modificados
+          git add reportes/
+          
+          # Comprobar si existen cambios pendientes de commit
+          if git diff --staged --quiet; then
+            echo "No hay nuevos reportes que comprometer."
+          else
+            git commit -m "Auto: Archivo PDF acumulado generado con fecha $(date +%F)"
+            git push
+          fi
