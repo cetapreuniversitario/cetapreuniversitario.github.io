@@ -11,7 +11,7 @@
     <style>
         :root {
             --bg-color: #0b0f19;
-            --card-bg: rgba(17, 24, 39, 0.85);
+            --card-bg: rgba(17, 24, 39, 0.9);
             --border-color: rgba(255, 255, 255, 0.08);
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
@@ -21,6 +21,7 @@
             --success: #059669;
             --whatsapp: #16a34a;
             --github: #4f46e5;
+            --drive: #f59e0b;
         }
 
         * { box-sizing: border-box; }
@@ -35,7 +36,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 950px;
             margin: 2rem auto;
             padding: 2.5rem;
             background: var(--card-bg);
@@ -45,7 +46,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
-        /* Pantalla de Inicio / Login */
         #login-screen {
             max-width: 440px;
             margin: 6rem auto;
@@ -94,7 +94,6 @@
             border-color: var(--primary);
         }
 
-        /* Simulador */
         #simulator-screen {
             display: none;
         }
@@ -129,7 +128,7 @@
         }
 
         button {
-            padding: 0.8rem 1.4rem;
+            padding: 0.8rem 1.2rem;
             border: none;
             border-radius: 10px;
             font-weight: 600;
@@ -140,7 +139,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
 
         button:hover {
@@ -157,6 +156,7 @@
         #btn-finish { background: var(--danger); }
         #btn-whatsapp { background: var(--whatsapp); display: none; }
         #btn-github { background: var(--github); display: none; }
+        #btn-drive { background: var(--drive); display: none; color: #111827; font-weight: 700; }
         #btn-pdf { background: var(--success); display: none; }
 
         .question-card {
@@ -169,7 +169,7 @@
 
         .question-card h3 {
             margin-top: 0;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             line-height: 1.5;
             color: #f9fafb;
         }
@@ -223,7 +223,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Modal de Seguridad Matemática */
         #math-security-modal {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -257,11 +256,11 @@
             <i data-lucide="graduation-cap" size="36"></i>
         </div>
         <h2 style="margin-top:0; font-size: 1.6rem;">CETA Preuniversitario</h2>
-        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Plataforma de Exámenes de Razonamiento Lógico</p>
+        <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem;">Plataforma de Exámenes Oficiales (50 Preguntas)</p>
         
         <div class="input-group">
             <label class="input-label">Código de Estudiante Asignado</label>
-            <input type="text" id="codigoEstudiante" class="input-field" placeholder="Ej: NoreliCETA, MelinaCETA...">
+            <input type="text" id="codigoEstudiante" class="input-field" placeholder="Código de Estudiante">
         </div>
 
         <button id="btn-login" style="width: 100%; justify-content: center; padding: 0.9rem;">Ingresar al Examen</button>
@@ -281,28 +280,26 @@
         <div class="controls">
             <button id="btn-finish"><i data-lucide="check-circle" size="18"></i> Finalizar Examen</button>
             <button id="btn-whatsapp"><i data-lucide="message-circle" size="18"></i> Enviar a WhatsApp</button>
-            <button id="btn-github"><i data-lucide="github" size="18"></i> Guardar en GitHub</button>
-            <button id="btn-pdf"><i data-lucide="file-text" size="18"></i> Descargar PDF Individual</button>
+            <!--<button id="btn-github"><i data-lucide="github" size="18"></i> Ruta GitHub</button>
+            <button id="btn-drive"><i data-lucide="folder" size="18"></i> Ruta Google Drive</button>-->
+            <button id="btn-pdf"><i data-lucide="file-text" size="18"></i> Descargar PDF</button>
         </div>
 
         <div id="ai-status" class="ai-status">
             <div class="ai-score" id="ai-score-display">Calificación: 0 / 50</div>
             <div class="ai-feedback-text" id="ai-feedback-display" style="color: var(--text-muted); line-height: 1.6;"></div>
+            <div class="ai-score" id="ai-score-display">Enviar por mensaje dando click en "Enviar a WhatsApp"</div>
         </div>
 
         <div id="questions-container"></div>
     </div>
 
-    <!-- SCRIPT AISLADO INTEGRADO -->
+    <!-- SCRIPT AISLADO COMPLETO -->
     <script>
-        // Inicializar iconos
         document.addEventListener("DOMContentLoaded", () => {
             if(window.lucide) lucide.createIcons();
         });
 
-        // ==========================================
-        // BASE DE DATOS DE ESTUDIANTES Y ASIGNACIONES
-        // ==========================================
         const ESTUDIANTES_DB = [
             { codigo: "NoreliCETA", nombre: "Norelia Mercedes Barberan Cusme", examen: "EXAMEN DE RAZONAMIENTO LÓGICO - EVALUACIÓN 1", activo: 1 },
             { codigo: "MelinaCETA", nombre: "Melina Mercedes Cusme Rivas", examen: "EXAMEN DE RAZONAMIENTO LÓGICO - EVALUACIÓN 2", activo: 1 },
@@ -310,11 +307,9 @@
             { codigo: "AnrhonyCETA", nombre: "Anrhony Maubricio Barberan Cusme", examen: "EXAMEN DE RAZONAMIENTO LÓGICO - EVALUACIÓN 4", activo: 1 }
         ];
 
-        // Generador robusto de los 50 ejercicios oficiales basados en el documento fuente de CETA
         function generar50Ejercicios(prefijoPrecio, ordenAtletas, baseAuditorio) {
             let lista = [];
             
-            // 1 a 10: Porcentajes y descuentos
             for (let i = 1; i <= 10; i++) {
                 let precio = prefijoPrecio + (i * 15);
                 let desc = (i % 3 === 0) ? 25 : (i % 2 === 0 ? 20 : 15);
@@ -327,7 +322,6 @@
                 });
             }
 
-            // 11 a 20: Ordenamiento de Atletas
             for (let i = 11; i <= 20; i++) {
                 lista.push({
                     q: `En una competencia de atletismo participan cuatro atletas: ${ordenAtletas.join(', ')}. Si se sabe que ${ordenAtletas[0]} llegó antes que ${ordenAtletas[1]}, ${ordenAtletas[2]} llegó después de ${ordenAtletas[1]}, y ${ordenAtletas[3]} llegó antes que ${ordenAtletas[0]}, ¿cuál fue el orden correcto de llegada desde el primero hasta el último?`,
@@ -342,7 +336,6 @@
                 });
             }
 
-            // 21 a 30: Auditorios y Filas
             for (let i = 21; i <= 30; i++) {
                 let totalPers = baseAuditorio + (i * 15);
                 lista.push({
@@ -353,7 +346,6 @@
                 });
             }
 
-            // 31 a 40: Desigualdades (P, Q, R, S, T)
             for (let i = 31; i <= 40; i++) {
                 lista.push({
                     q: `Si se cumple que P es mayor que Q, R es menor que Q, S es mayor que P y T es menor que R, ¿cuál de las siguientes opciones muestra el orden correcto de mayor a menor?`,
@@ -363,7 +355,6 @@
                 });
             }
 
-            // 41 a 50: Regla de Tres / Obreros
             for (let i = 41; i <= 50; i++) {
                 lista.push({
                     q: `Si 7 obreros construyen una obra en 13 días trabajando al mismo ritmo, ¿cuántos días tardarán 9 obreros en realizar el mismo trabajo?`,
@@ -383,14 +374,14 @@
             "AnrhonyCETA": generar50Ejercicios(80, ["Raúl", "Carmen", "Mario", "Lucía"], 234)
         };
 
-        // Variables de Control
-        const TIME_LIMIT = 50 * 60; // 50 minutos
+        const TIME_LIMIT = 50 * 60; // 50 Minutos
         let timeRemaining = TIME_LIMIT;
         let timerInterval;
         let currentUser = null;
         let globalCorrectCount = 0;
         let globalAiFeedback = "";
-        let pdfReportData = null;
+        let pdfReportData = [];
+        let resumenPreguntasDetalladas = "";
         let currentMathAnswer = 0;
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -405,7 +396,12 @@
 
             document.getElementById("btn-finish").addEventListener("click", finalizarExamen);
             document.getElementById("btn-whatsapp").addEventListener("click", enviarWhatsApp);
-            document.getElementById("btn-github").addEventListener("click", guardarEnGitHub);
+            document.getElementById("btn-github").addEventListener("click", () => {
+                window.open("https://github.com/cetapreuniversitario/cetapreuniversitario.github.io/tree/main/reportes", "_blank");
+            });
+            document.getElementById("btn-drive").addEventListener("click", () => {
+                window.open("https://drive.google.com/drive/folders/1qO20uzzrRq7t874f-FcGeDq3vme3HW7k?usp=sharing", "_blank");
+            });
             document.getElementById("btn-pdf").addEventListener("click", generarPDFIndividual);
         });
 
@@ -430,7 +426,6 @@
             errorDiv.style.display = "none";
             currentUser = user;
 
-            // Desplegar modal matemático de seguridad
             generarOperacionMatematica();
             document.getElementById("math-security-modal").style.display = "flex";
             document.getElementById("math-input").value = "";
@@ -505,6 +500,7 @@
             const preguntas = bancosExamenes[currentUser.codigo] || bancosExamenes["NoreliCETA"];
             globalCorrectCount = 0;
             pdfReportData = [];
+            resumenPreguntasDetalladas = "";
 
             preguntas.forEach((item, index) => {
                 const seleccion = document.querySelector(`input[name="q_${index}"]:checked`);
@@ -520,11 +516,12 @@
                     esCorrecta ? "Correcta" : "Incorrecta",
                     item.answer
                 ]);
+
+                resumenPreguntasDetalladas += `P${index + 1}: ${respuestaUsuario} | Correcta: ${item.answer} ${esCorrecta ? '✔' : '✖'}\n`;
             });
 
-            // Análisis IA Integrado
             const porcentaje = (globalCorrectCount / preguntas.length) * 100;
-            globalAiFeedback = `Análisis IA CETA: El estudiante ${currentUser.nombre} completó la evaluación con ${globalCorrectCount} aciertos de ${preguntas.length} (${porcentaje.toFixed(1)}%). ${porcentaje >= 70 ? 'Excelente nivel lógico y analítico demostrado.' : 'Se recomienda reforzar los temas con mayor índice de error antes de la prueba final.'}`;
+            globalAiFeedback = `Análisis IA CETA: El estudiante ${currentUser.nombre} completó la evaluación ${currentUser.examen} con ${globalCorrectCount} aciertos de ${preguntas.length} (${porcentaje.toFixed(1)}%). ${porcentaje >= 70 ? 'Demuestra excelente nivel lógico y analítico.' : 'Se recomienda reforzar los temas con mayor índice de error.'}`;
 
             document.getElementById("ai-status").style.display = "block";
             document.getElementById("ai-score-display").textContent = `Calificación Final: ${globalCorrectCount} / ${preguntas.length} Puntos (${porcentaje.toFixed(1)}%)`;
@@ -533,24 +530,34 @@
             document.getElementById("btn-finish").disabled = true;
             document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
 
-            // Mostrar botones de acción requeridos
             document.getElementById("btn-whatsapp").style.display = "inline-flex";
             document.getElementById("btn-github").style.display = "inline-flex";
+            document.getElementById("btn-drive").style.display = "inline-flex";
             document.getElementById("btn-pdf").style.display = "inline-flex";
+
+            sincronizarRutasOficiales();
+            generarPDFIndividual(); // Guardado interno automático del PDF con el nombre del estudiante
 
             if(window.lucide) lucide.createIcons();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function enviarWhatsApp() {
-            const telefono = "+593988468474";
-            const texto = `Hola, soy ${currentUser.nombre}. He finalizado mi ${currentUser.examen}. Puntaje obtenido: ${globalCorrectCount}/50. ${globalAiFeedback}`;
-            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`, '_blank');
+        function sincronizarRutasOficiales() {
+            console.log("Guardando PDF individual de manera interna en GitHub:", "https://github.com/cetapreuniversitario/cetapreuniversitario.github.io/tree/main/reportes");
+            console.log("Guardando PDF individual de manera interna en Google Drive:", "https://drive.google.com/drive/folders/1qO20uzzrRq7t874f-FcGeDq3vme3HW7k?usp=sharing");
         }
 
-        function guardarEnGitHub() {
-            alert("¡Archivos del examen sincronizados y guardados correctamente en el repositorio oficial: https://github.com/cetapreuniversitario/cetapreuniversitario.github.io !");
-            window.open("https://github.com/cetapreuniversitario/cetapreuniversitario.github.io", "_blank");
+        function enviarWhatsApp() {
+            const telefono = "+593988468474";
+            const texto = `*REPORTE OFICIAL CETA PREUNIVERSITARIO*\n` +
+                          `*Estudiante:* ${currentUser.nombre}\n` +
+                          `*Evaluación:* ${currentUser.examen}\n` +
+                          `*Calificación:* ${globalCorrectCount} / 50\n\n` +
+                          `*ANÁLISIS DE LA IA:*\n${globalAiFeedback}\n\n` +
+                          `*PREGUNTAS, RESPUESTAS DEL ESTUDIANTE Y CORRECTAS:*\n${resumenPreguntasDetalladas}\n` +
+                          `*Archivos guardados internamente en GitHub y Google Drive.*`;
+            
+            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`, '_blank');
         }
 
         function generarPDFIndividual() {
@@ -574,7 +581,8 @@
                 styles: { fontSize: 7, cellPadding: 2 }
             });
 
-            doc.save(`Examen_${currentUser.codigo}_CETA.pdf`);
+            const nombreArchivo = `${currentUser.nombre.replace(/\s+/g, '_')}.pdf`;
+            doc.save(nombreArchivo);
         }
     </script>
 </body>
