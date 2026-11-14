@@ -1026,7 +1026,7 @@
             <a href="#" class="sim-link">Matrices Espaciales <i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
-          <!-- MÓDULO R. LÓGICO: Notificación de Concluido + Simulador Conservado -->
+          <!-- MÓDULO R. LÓGICO: Notificación de Concluido + Simulador Conservado + Examen Condicional -->
           <div class="course-card" id="card-logico">
             <div class="course-badge" style="background: var(--accent-logic);"><i data-lucide="brain"></i></div>
             <h3>R. Lógico</h3>
@@ -1043,8 +1043,8 @@
               <span>Acceder al Simulador de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
             </a>
             
-            <!-- ENLACE AL EXÁMEN DE LÓGICA (Visible EXCLUSIVAMENTE para los 4 estudiantes autorizados con validación de código) -->
-            <a onclick="verificarCodigoExamen()" id="link-examen-logica" class="sim-link" style="display: none; background: rgba(220, 38, 38, 0.12); border-color: rgba(220, 38, 38, 0.3); color: #ef4444; cursor: pointer;">
+            <!-- ENLACE AL EXÁMEN DE LÓGICA (Visible EXCLUSIVAMENTE para los 4 estudiantes autorizados) -->
+            <a href="#" id="link-examen-logica" class="sim-link" target="_blank" style="display: none; background: rgba(220, 38, 38, 0.12); border-color: rgba(220, 38, 38, 0.3); color: #ef4444;">
               <span>Acceder al Exámen de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
             </a>
           </div>
@@ -1105,7 +1105,7 @@
   <script src="config-secciones.js"></script>
   <script src="estudiantes-db.js"></script>
   <script src="footer-ceta.js"></script>
-  <script src="notificaciones-verbal.js"></script> <!-- Archivo JS externo vinculado -->
+  <script src="notificaciones-verbal.js"></script>
 
   <script>
     const themeBtn = document.getElementById('theme-toggle-btn');
@@ -1192,7 +1192,7 @@
       document.getElementById('user-display-name').textContent = `Hola, ${userObj.nombre.split(' ')[0]}`;
       aplicarConfiguracionSecciones();
 
-      // Condición estricta: Mostrar el Examen de Lógica únicamente para los 4 estudiantes asignados
+      // Condición estricta: Mostrar el enlace del Examen de Lógica únicamente para los 4 estudiantes autorizados
       const codigosPermitidosExamen = ["NoreliCETA", "MelinaCETA", "ByronCETA", "AnrhonyCETA"];
       const linkExamen = document.getElementById('link-examen-logica');
       if (linkExamen) {
@@ -1239,7 +1239,6 @@
       overlay.classList.remove('active'); 
       scheduleModal.classList.remove('active'); 
       verbalNotifModal.classList.remove('active');
-      if(modalCodigoExamen) modalCodigoExamen.classList.remove('active');
     }
 
     overlay.onclick = closeAllModals;
@@ -1252,13 +1251,11 @@
       lucide.createIcons();
     };
 
-    // Vincular enlace de la barra lateral de Tareas al modal externo de notificaciones
     tasksToggle.onclick = (e) => {
       e.preventDefault();
       openVerbalModal();
     };
 
-    // Vincular la campanita del header para abrir el modal con el script JS
     notifBell.onclick = () => {
       openVerbalModal();
     };
@@ -1293,66 +1290,6 @@
         }
       }
     };
-  </script>
-  <!-- MODAL DE CÓDIGO DE ACCESO AL EXAMEN -->
-  <div class="modal" id="modal-codigo-examen">
-    <div class="modal-card" style="max-width: 380px; text-align: center;">
-      <div class="modal-header" style="justify-content: flex-end; margin-bottom: 0;">
-        <button class="btn-close" id="close-modal-examen"><i data-lucide="x" size="20"></i></button>
-      </div>
-      <div class="logo-circle" style="width: 60px; height: 60px; margin: 0 auto 1rem; background: #dc2626;">
-        <i data-lucide="shield-alert" size="30"></i>
-      </div>
-      <h3 style="margin-bottom: 0.5rem; font-size: 1.25rem;">Código de Examen Requerido</h3>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Ingresa el código oficial proporcionado para acceder a la evaluación:</p>
-      
-      <div class="input-group">
-        <input type="password" id="input-codigo-examen" class="input-field" placeholder="Código" style="text-align: center; font-weight: bold;" onkeypress="checkEnterExamen(event)">
-      </div>
-      <div id="examen-error-msg" class="error-msg" style="margin-bottom: 1rem;">Código incorrecto. Inténtalo de nuevo.</div>
-      
-      <button class="btn-primary" onclick="validarYEntrarExamen()" style="background: #dc2626; width: 100%; justify-content: center;">
-        <span>Verificar y Abrir Examen</span>
-        <i data-lucide="arrow-right" size="18"></i>
-      </button>
-    </div>
-  </div>
-
-  <script>
-    const modalCodigoExamen = document.getElementById('modal-codigo-examen');
-    const closeModalExamenBtn = document.getElementById('close-modal-examen');
-
-    function verificarCodigoExamen() {
-      document.getElementById('input-codigo-examen').value = '';
-      document.getElementById('examen-error-msg').style.display = 'none';
-      modalCodigoExamen.classList.add('active');
-      overlay.classList.add('active');
-      document.getElementById('input-codigo-examen').focus();
-      lucide.createIcons();
-    }
-
-    function validarYEntrarExamen() {
-      const codigoIngresado = document.getElementById('input-codigo-examen').value.trim();
-      if (codigoIngresado === "CETAEXAMEN2026") {
-        modalCodigoExamen.classList.remove('active');
-        overlay.classList.remove('active');
-        window.open("examen-final.html", "_blank");
-      } else {
-        const err = document.getElementById('examen-error-msg');
-        err.style.display = 'block';
-      }
-    }
-
-    function checkEnterExamen(e) {
-      if (e.key === 'Enter') validarYEntrarExamen();
-    }
-
-    if (closeModalExamenBtn) {
-      closeModalExamenBtn.onclick = () => {
-        modalCodigoExamen.classList.remove('active');
-        overlay.classList.remove('active');
-      };
-    }
   </script>
 </body>
 </html>
