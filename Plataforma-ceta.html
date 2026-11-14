@@ -1026,7 +1026,7 @@
             <a href="#" class="sim-link">Matrices Espaciales <i data-lucide="chevron-right" size="14"></i></a>
           </div>
 
-          <!-- MÓDULO R. LÓGICO: Notificación de Concluido + Simulador Conservado -->
+          <!-- MÓDULO R. LÓGICO: Notificación de Concluido + Simulador Conservado + Examen Condicional -->
           <div class="course-card" id="card-logico">
             <div class="course-badge" style="background: var(--accent-logic);"><i data-lucide="brain"></i></div>
             <h3>R. Lógico</h3>
@@ -1042,10 +1042,11 @@
             <a href="simulador_lógica.html" class="sim-link" target="_blank">
               <span>Acceder al Simulador de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
             </a>
-             <a href="examen-final.html" class="sim-link" target="_blank">
+            
+            <!-- ENLACE AL EXÁMEN DE LÓGICA (Visible EXCLUSIVAMENTE para los 4 estudiantes autorizados) -->
+            <a href="examen-final.html" id="link-examen-logica" class="sim-link" target="_blank" style="display: none; background: rgba(220, 38, 38, 0.12); border-color: rgba(220, 38, 38, 0.3); color: #ef4444;">
               <span>Acceder al Exámen de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
             </a>
-            
           </div>
 
           <div class="course-card" id="card-examen">
@@ -1104,7 +1105,7 @@
   <script src="config-secciones.js"></script>
   <script src="estudiantes-db.js"></script>
   <script src="footer-ceta.js"></script>
-  <script src="notificaciones-verbal.js"></script> <!-- Archivo JS externo vinculado -->
+  <script src="notificaciones-verbal.js"></script>
 
   <script>
     const themeBtn = document.getElementById('theme-toggle-btn');
@@ -1154,7 +1155,7 @@
       }
 
       localStorage.setItem('ceta_session', JSON.stringify(authResult.user));
-      renderDashboard(authResult.user.nombre);
+      renderDashboard(authResult.user);
     }
 
     function aplicarConfiguracionSecciones() {
@@ -1185,11 +1186,23 @@
       e.style.display = 'block';
     }
 
-    function renderDashboard(name) {
+    function renderDashboard(userObj) {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('main-dashboard').style.display = 'block';
-      document.getElementById('user-display-name').textContent = `Hola, ${name.split(' ')[0]}`;
+      document.getElementById('user-display-name').textContent = `Hola, ${userObj.nombre.split(' ')[0]}`;
       aplicarConfiguracionSecciones();
+
+      // Condición estricta: Mostrar el enlace del Examen de Lógica únicamente para los 4 estudiantes autorizados
+      const codigosPermitidosExamen = ["NoreliCETA", "MelinaCETA", "ByronCETA", "AnrhonyCETA"];
+      const linkExamen = document.getElementById('link-examen-logica');
+      if (linkExamen) {
+        if (codigosPermitidosExamen.includes(userObj.codigo)) {
+          linkExamen.style.display = 'flex';
+        } else {
+          linkExamen.style.display = 'none';
+        }
+      }
+
       lucide.createIcons();
     }
 
@@ -1238,13 +1251,11 @@
       lucide.createIcons();
     };
 
-    // Vincular enlace de la barra lateral de Tareas al modal externo de notificaciones
     tasksToggle.onclick = (e) => {
       e.preventDefault();
       openVerbalModal();
     };
 
-    // Vincular la campanita del header para abrir el modal con el script JS
     notifBell.onclick = () => {
       openVerbalModal();
     };
@@ -1273,7 +1284,7 @@
         const userSession = JSON.parse(session);
         const userCheck = ESTUDIANTES_DB.find(u => u.codigo === userSession.codigo);
         if(userCheck && userCheck.activo === 1) {
-          renderDashboard(userCheck.nombre);
+          renderDashboard(userCheck);
         } else {
           localStorage.removeItem('ceta_session');
         }
