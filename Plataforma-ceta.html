@@ -1043,8 +1043,8 @@
               <span>Acceder al Simulador de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
             </a>
             
-            <!-- ENLACE AL EXÁMEN DE LÓGICA (Visible EXCLUSIVAMENTE para los 4 estudiantes autorizados) -->
-            <a href="examen-final.html"  id="link-examen-logica" class="sim-link" target="_blank" style="display: none; background: rgba(220, 38, 38, 0.12); border-color: rgba(220, 38, 38, 0.3); color: #ef4444;">
+            <!-- ENLACE AL EXÁMEN DE LÓGICA (Visible EXCLUSIVAMENTE para Byron y Anrhony) -->
+            <a href="examen-final.html" id="link-examen-logica" class="sim-link" target="_blank" style="display: none; background: rgba(220, 38, 38, 0.12); border-color: rgba(220, 38, 38, 0.3); color: #ef4444;">
               <span>Acceder al Exámen de Lógica</span> <i data-lucide="chevron-right" size="14"></i>
             </a>
           </div>
@@ -1192,8 +1192,8 @@
       document.getElementById('user-display-name').textContent = `Hola, ${userObj.nombre.split(' ')[0]}`;
       aplicarConfiguracionSecciones();
 
-      // Condición estricta: Mostrar el enlace del Examen de Lógica únicamente para los 4 estudiantes autorizados
-      const codigosPermitidosExamen = ["NoreliCETA", "MelinaCETA", "ByronCETA", "AnrhonyCETA"];
+      // Condición estricta: Mostrar el enlace del Examen de Lógica únicamente para Byron y Anrhony
+      const codigosPermitidosExamen = ["ByronCETA", "AnrhonyCETA"];
       const linkExamen = document.getElementById('link-examen-logica');
       if (linkExamen) {
         if (codigosPermitidosExamen.includes(userObj.codigo)) {

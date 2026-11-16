@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma Oficial de Exámenes - CETA Preuniversitario</title>
-     <link rel="icon" type="image/x-icon" href="icono.png">
+    <link rel="icon" type="image/x-icon" href="icono.png">
     <!-- Librerías de PDF y Iconos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -261,7 +261,7 @@
         
         <div class="input-group">
             <label class="input-label">Código de Estudiante Asignado</label>
-            <input type="text" id="codigoEstudiante" class="input-field" placeholder="Código de Estudiante">
+            <input type="text" id="codigoEstudiante" class="input-field" placeholder="Ej: ByronCETA, AnrhonyCETA...">
         </div>
 
         <button id="btn-login" style="width: 100%; justify-content: center; padding: 0.9rem;">Ingresar al Examen</button>
@@ -281,15 +281,14 @@
         <div class="controls">
             <button id="btn-finish"><i data-lucide="check-circle" size="18"></i> Finalizar Examen</button>
             <button id="btn-whatsapp"><i data-lucide="message-circle" size="18"></i> Enviar a WhatsApp</button>
-            <!--<button id="btn-github"><i data-lucide="github" size="18"></i> Ruta GitHub</button>
-            <button id="btn-drive"><i data-lucide="folder" size="18"></i> Ruta Google Drive</button>-->
+            <button id="btn-github"><i data-lucide="github" size="18"></i> Ruta GitHub</button>
+            <button id="btn-drive"><i data-lucide="folder" size="18"></i> Ruta Google Drive</button>
             <button id="btn-pdf"><i data-lucide="file-text" size="18"></i> Descargar PDF</button>
         </div>
 
         <div id="ai-status" class="ai-status">
             <div class="ai-score" id="ai-score-display">Calificación: 0 / 50</div>
             <div class="ai-feedback-text" id="ai-feedback-display" style="color: var(--text-muted); line-height: 1.6;"></div>
-            <div class="ai-score" id="ai-score-display">Enviar por mensaje dando click en "Enviar a WhatsApp"</div>
         </div>
 
         <div id="questions-container"></div>
@@ -301,9 +300,8 @@
             if(window.lucide) lucide.createIcons();
         });
 
+        // BASE DE DATOS ESTRICTA DE LOS ESTUDIANTES AUTORIZADOS
         const ESTUDIANTES_DB = [
-            { codigo: "NoreliCETA", nombre: "Norelia Mercedes Barberan Cusme", examen: "EXAMEN DE RAZONAMIENTO LÓGICO - EVALUACIÓN 1", activo: 1 },
-            { codigo: "MelinaCETA", nombre: "Melina Mercedes Cusme Rivas", examen: "EXAMEN DE RAZONAMIENTO LÓGICO - EVALUACIÓN 2", activo: 1 },
             { codigo: "ByronCETA", nombre: "Byron Serrano", examen: "EXAMEN DE RAZONAMIENTO LÓGICO - EVALUACIÓN 3", activo: 1 },
             { codigo: "AnrhonyCETA", nombre: "Anrhony Maubricio Barberan Cusme", examen: "EXAMEN DE RAZONAMIENTO LÓGICO - EVALUACIÓN 4", activo: 1 }
         ];
@@ -369,8 +367,6 @@
         }
 
         const bancosExamenes = {
-            "NoreliCETA": generar50Ejercicios(50, ["Ana", "Beatriz", "Carlos", "Diana"], 228),
-            "MelinaCETA": generar50Ejercicios(60, ["Pedro", "Luis", "Juan", "Rosa"], 240),
             "ByronCETA": generar50Ejercicios(70, ["Mateo", "Sofía", "Elena", "Diego"], 252),
             "AnrhonyCETA": generar50Ejercicios(80, ["Raúl", "Carmen", "Mario", "Lucía"], 234)
         };
@@ -472,7 +468,7 @@
 
         function renderizarPreguntas() {
             const container = document.getElementById("questions-container");
-            const preguntas = bancosExamenes[currentUser.codigo] || bancosExamenes["NoreliCETA"];
+            const preguntas = bancosExamenes[currentUser.codigo] || bancosExamenes["ByronCETA"];
             container.innerHTML = "";
 
             preguntas.forEach((item, index) => {
@@ -498,7 +494,7 @@
             if (!confirm("¿Estás seguro de finalizar el examen? No podrás cambiar tus respuestas.")) return;
             clearInterval(timerInterval);
 
-            const preguntas = bancosExamenes[currentUser.codigo] || bancosExamenes["NoreliCETA"];
+            const preguntas = bancosExamenes[currentUser.codigo] || bancosExamenes["ByronCETA"];
             globalCorrectCount = 0;
             pdfReportData = [];
             resumenPreguntasDetalladas = "";
@@ -518,7 +514,7 @@
                     item.answer
                 ]);
 
-                resumenPreguntasDetalladas += `P${index + 1}: ${respuestaUsuario} | Correcta: ${item.answer} ${esCorrecta ? '✔' : '✖'}\n`;
+                resumenPreguntasDetalladas += `P${index + 1}: ${item.q}\n> Tu respuesta: ${respuestaUsuario}\n> Correcta: ${item.answer} ${esCorrecta ? '✔' : '✖'}\n\n`;
             });
 
             const porcentaje = (globalCorrectCount / preguntas.length) * 100;
@@ -537,15 +533,15 @@
             document.getElementById("btn-pdf").style.display = "inline-flex";
 
             sincronizarRutasOficiales();
-            generarPDFIndividual(); // Guardado interno automático del PDF con el nombre del estudiante
+            generarPDFIndividual();
 
             if(window.lucide) lucide.createIcons();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function sincronizarRutasOficiales() {
-            console.log("Guardando PDF individual de manera interna en GitHub:", "https://github.com/cetapreuniversitario/cetapreuniversitario.github.io/tree/main/reportes");
-            console.log("Guardando PDF individual de manera interna en Google Drive:", "https://drive.google.com/drive/folders/1qO20uzzrRq7t874f-FcGeDq3vme3HW7k?usp=sharing");
+            console.log("Guardando PDF individual internamente en GitHub:", "https://github.com/cetapreuniversitario/cetapreuniversitario.github.io/tree/main/reportes");
+            console.log("Guardando PDF individual internamente en Google Drive:", "https://drive.google.com/drive/folders/1qO20uzzrRq7t874f-FcGeDq3vme3HW7k?usp=sharing");
         }
 
         function enviarWhatsApp() {
@@ -555,8 +551,8 @@
                           `*Evaluación:* ${currentUser.examen}\n` +
                           `*Calificación:* ${globalCorrectCount} / 50\n\n` +
                           `*ANÁLISIS DE LA IA:*\n${globalAiFeedback}\n\n` +
-                          `*PREGUNTAS, RESPUESTAS DEL ESTUDIANTE Y CORRECTAS:*\n${resumenPreguntasDetalladas}\n` +
-                          `*Archivos guardados internamente en GitHub y Google Drive.*`;
+                          `*DETALLE DE PREGUNTAS (Estudiante vs Correctas):*\n${resumenPreguntasDetalladas}\n` +
+                          `*Reportes guardados internamente en GitHub y Google Drive.*`;
             
             window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(texto)}`, '_blank');
         }
