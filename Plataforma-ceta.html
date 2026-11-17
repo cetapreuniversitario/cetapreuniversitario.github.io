@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>CETA Preuniversitario | Plataforma Académica</title>
   <link rel="icon" type="image/x-icon" href="icono.png">
+  
+  <!-- CONFIGURACIÓN PWA / MÓVIL -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icono.png">
+
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -812,6 +821,35 @@
     <i data-lucide="moon" id="theme-icon" size="22"></i>
   </button>
 
+  <!-- BOTÓN AUTOMÁTICO DE NUEVA ACTUALIZACIÓN -->
+  <div id="update-notification-banner" style="display: none; position: fixed; bottom: 20px; right: 20px; background: var(--card-bg); border: 1px solid var(--primary); padding: 1rem 1.25rem; border-radius: 16px; z-index: 4000; box-shadow: 0 10px 25px rgba(37,99,235,0.25); align-items: center; gap: 12px;">
+    <div style="width: 38px; height: 38px; background: rgba(37, 99, 235, 0.15); color: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+      <i data-lucide="refresh-cw" size="20"></i>
+    </div>
+    <div>
+      <h4 style="font-size: 0.9rem; font-weight: 800; color: var(--text-main);">Nueva actualización disponible</h4>
+      <p style="font-size: 0.78rem; color: var(--text-muted);">Hay mejoras listas para aplicarse.</p>
+    </div>
+    <button id="btn-reload-page" class="btn-primary" style="padding: 8px 14px; font-size: 0.8rem; width: auto; margin-left: 10px;">Actualizar</button>
+  </div>
+
+  <!-- BANNER DE INSTALACIÓN PWA (SOLO MÓVILES) -->
+  <div id="pwa-install-banner" style="display: none; position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--card-bg); border: 1px solid var(--border); padding: 1.25rem; border-radius: 20px; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+      <div style="width: 40px; height: 40px; background: rgba(37, 99, 235, 0.15); color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <i data-lucide="smartphone" size="22"></i>
+      </div>
+      <div>
+        <h4 style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">Instalar Aplicación CETA</h4>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Accede más rápido agregando el acceso directo a la pantalla de tu móvil.</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button id="btn-install-pwa" class="btn-primary" style="padding: 10px; font-size: 0.85rem;">Instalar ahora</button>
+      <button id="btn-close-pwa" style="flex: 1; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-muted); border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 0.85rem;">Ahora no</button>
+    </div>
+  </div>
+
   <!-- Login con Diseño Dividido -->
   <div id="login-screen">
     <div class="login-left-pane">
@@ -1270,8 +1308,91 @@
       lucide.createIcons();
     }
 
-    closeModal.onclick = () => { scheduleModal.classList.remove('icon'); scheduleModal.classList.remove('active'); overlay.classList.remove('active'); };
+    closeModal.onclick = () => { scheduleModal.classList.remove('active'); overlay.classList.remove('active'); };
     closeVerbalModalBtn.onclick = () => { verbalNotifModal.classList.remove('active'); overlay.classList.remove('active'); };
+
+    /* --- SCRIPT CONTROL PWA (SOLO MÓVILES) --- */
+    let deferredPrompt;
+    const installBanner = document.getElementById('pwa-install-banner');
+    const btnInstall = document.getElementById('btn-install-pwa');
+    const btnClose = document.getElementById('btn-close-pwa');
+
+    function esDispositivoMovil() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 1024;
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      if (esDispositivoMovil() && !window.matchMedia('(display-mode: standalone)').matches) {
+        installBanner.style.display = 'block';
+        lucide.createIcons();
+      }
+    });
+
+    if (btnInstall) {
+      btnInstall.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            console.log('Usuario aceptó instalar la PWA');
+          }
+          deferredPrompt = null;
+          installBanner.style.display = 'none';
+        }
+      });
+    }
+
+    if (btnClose) {
+      btnClose.addEventListener('click', () => {
+        installBanner.style.display = 'none';
+      });
+    }
+
+    /* --- SCRIPT DETECCIÓN AUTOMÁTICA DE ACTUALIZACIONES --- */
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then((registration) => {
+        if (registration.waiting) {
+          mostrarBotonActualizacion(registration);
+        }
+
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              mostrarBotonActualizacion(registration);
+            }
+          });
+        });
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    }
+
+    function mostrarBotonActualizacion(registration) {
+      const updateBanner = document.getElementById('update-notification-banner');
+      const btnReload = document.getElementById('btn-reload-page');
+      
+      if (updateBanner) {
+        updateBanner.style.display = 'flex';
+        lucide.createIcons();
+
+        btnReload.onclick = () => {
+          if (registration.waiting) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+          }
+          window.location.reload();
+        };
+      }
+    }
 
     window.onload = () => {
       const savedTheme = localStorage.getItem('ceta_theme');

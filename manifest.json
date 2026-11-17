@@ -1,0 +1,20 @@
+{
+  "name": "CETA Preuniversitario",
+  "short_name": "CETA",
+  "start_url": "Plataforma-ceta.html",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icono.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icono.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
