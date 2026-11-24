@@ -34,7 +34,7 @@ const VIDEOS_DB = [
     fecha: "2026-10-24", 
     duracion: "4 min",
     titulo: "PROBLEMAS DE ORDEN DE INFORMACIÓN", 
-    url: "https://www.youtube.com/watch?v=fNEVu5rbYNk", 
+    url: "", 
     youtubeId: "fNEVu5rbYNk", 
     type: "mp4",
     activo: 1 
@@ -45,7 +45,7 @@ const VIDEOS_DB = [
     fecha: "2026-10-24", 
     duracion: "4 min",
     titulo: "RAZONES Y PROPORCIONES Ejercicio 1 Super facil - Para principiantes", 
-    url: "http://youtube.com/watch?v=3eYwW4sDlxM", 
+    url: "", 
     youtubeId: "3eYwW4sDlxM", 
     type: "mp4",
     activo: 1 
@@ -127,11 +127,31 @@ const VIDEOS_DB = [
   { 
     id: 4, 
     modulo: "R. Verbal", 
-    fecha: "2026-04-05", 
-    duracion: "15 min",
-    titulo: "Analogías y Comprensión Lectora", 
-    url: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8", 
+    fecha: "2026-11-21", 
+    duracion: "24 min",
+    titulo: "Sinónimos", 
+    url: "https://www.youtube.com/watch?v=4uxZeaefdGg", 
     type: "hls",
-    activo: 0 
+    activo: 1 
+  },
+  { 
+    id: 4, 
+    modulo: "R. Verbal", 
+    fecha: "2026-11-21", 
+    duracion: "17 min",
+    titulo: "Antónimos", 
+    url: "https://www.youtube.com/watch?v=v9ixHQdFzMU", 
+    type: "hls",
+    activo: 1 
+  },
+  { 
+    id: 4, 
+    modulo: "R. Verbal", 
+    fecha: "2026-11-21", 
+    duracion: "45 min",
+    titulo: "Analogías", 
+    url: "https://www.youtube.com/watch?v=xzXb1v0u0X4", 
+    type: "hls",
+    activo: 1 
   }
 ];

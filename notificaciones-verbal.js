@@ -17,6 +17,13 @@ const NOTIFICACIONES_VERBAL = [
     descripcion: "Te esperamos en la clase presencial este sábado para continuar con los temas programados.",
     fecha: "Próximo Sábado",
     tipo: "importante"
+  },
+  {
+    id: 3,
+    titulo: "Recordatorio de Tareas",
+    descripcion: "Te recordamos realizar los ejercicios de la página 1 a la 30 dada en la clase presencial este sábado para continuar con los temas programados.",
+    fecha: "Próximo Sábado",
+    tipo: "importante"
   }
 ];
 
